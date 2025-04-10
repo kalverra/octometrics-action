@@ -4,10 +4,13 @@ import commonjs from '@rollup/plugin-commonjs'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 
 const config = {
-  input: 'src/index.js',
+  input: {
+    main: 'src/main.js',
+    post: 'src/post.js'
+  },
   output: {
     esModule: true,
-    file: 'dist/index.js',
+    dir: 'dist',
     format: 'es',
     sourcemap: false
   },

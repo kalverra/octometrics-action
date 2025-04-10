@@ -1,22 +1,43 @@
 {
-  "name": "hello-world-javascript-action",
-  "description": "This action prints `Hello, World!` or `Hello, <who-to-greet>!` to the log",
-  "version": "1.0.0",
-  "author": "",
+  "name": "octometrics-action",
+  "description": "Use octometrics in your GitHub Actions workflows to visualize and monitor your workflow's timing, CPU, memory, disk, IO, and more.",
+  "version": "0.0.1",
+  "author": "kalverra",
   "private": true,
   "type": "module",
-  "homepage": "https://github.com/actions/hello-world-javascript-action#readme",
+  "homepage": "https://github.com/kalverra/octometrics-action#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/hello-world-javascript-action.git"
+    "url": "git+https://github.com/kalverra/octometrics-action.git"
   },
   "bugs": {
-    "url": "https://github.com/actions/hello-world-javascript-action/issues"
+    "url": "https://github.com/kalverra/octometrics-action/issues"
   },
   "keywords": [
     "GitHub",
     "Actions",
-    "JavaScript"
+    "octometrics",
+    "metrics",
+    "monitoring",
+    "visualization",
+    "workflow",
+    "timing",
+    "CPU",
+    "memory",
+    "disk",
+    "IO",
+    "GitHub Actions",
+    "GitHub Actions timing",
+    "GitHub Actions CPU",
+    "GitHub Actions memory",
+    "GitHub Actions disk",
+    "GitHub Actions IO",
+    "telemetry",
+    "telemetry data",
+    "telemetry data visualization",
+    "telemetry data monitoring",
+    "telemetry data analysis",
+    "telemetry data reporting"
   ],
   "exports": {
     ".": "./dist/index.js"
