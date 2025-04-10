@@ -54,6 +54,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Test Octometrics Action
         uses: ./
+
       - name: Simulate CPU Usage
         id: simulate-cpu-usage
         run: |
@@ -65,6 +66,7 @@ jobs:
               sum=$((num1 + num2))
             done
           done
+
       - name: Simulate Memory Usage
         id: simulate-memory-usage
         run: |
@@ -79,6 +81,7 @@ jobs:
           done
           # Clear the array to free memory
           unset memory_array
+
       - name: Simulate Disk Usage
         id: simulate-disk-usage
         run: |
@@ -97,6 +100,7 @@ jobs:
           # Clean up the test files
           cd ..
           rm -rf disk_test
+
       - name: Simulate Network Usage
         id: simulate-network-usage
         run: |
@@ -104,8 +108,4 @@ jobs:
             echo "Simulating network usage - iteration $i"
             # Download a webpage and measure the time taken
             curl -o /dev/null -s -w "Download time: %{time_total}s\n" "https://google.com"
-            # Simulate some DNS lookups
-            dig +short google.com
-            # Ping to simulate network latency
-            ping -c 4 8.8.8.8
           done

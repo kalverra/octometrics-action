@@ -1,14 +1,29 @@
-name: octometrics-action
-description: Record metrics from your GitHub Actions
-author: kalverra
+name: 'Octometrics Action'
+description: 'Download and install octometrics binary'
+author: 'Adam Hamrick'
 
 inputs:
   version:
-    description: Specify the version of octometrics to use
+    description:
+      'Version of octometrics to install (e.g. v1.0.0). If not specified, latest
+      release will be used.'
     required: false
-    default: latest
+  token:
+    description:
+      'GitHub token for accessing releases. Defaults to GITHUB_TOKEN.'
+    required: false
+
+outputs:
+  version:
+    description: 'The version of octometrics that was installed'
+  path:
+    description: 'The path to the installed octometrics binary'
 
 runs:
-  using: node20
-  main: dist/main.js
-  post: dist/post.js
+  using: 'node20'
+  main: 'dist/main.js'
+  post: 'dist/post.js'
+
+branding:
+  icon: 'download'
+  color: 'blue'
