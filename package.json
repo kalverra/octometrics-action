@@ -61,12 +61,14 @@
   "dependencies": {
     "@actions/artifact": "^2.3.2",
     "@actions/core": "^1.11.1",
-    "@actions/github": "^6.0.0"
+    "@actions/github": "^6.0.0",
+    "@actions/tool-cache": "^2.0.1"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.8",
     "@jest/globals": "^29.7.0",
     "@rollup/plugin-commonjs": "^28.0.3",
+    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.1.2",

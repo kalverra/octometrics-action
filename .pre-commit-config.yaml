@@ -19,4 +19,10 @@ repos:
         pass_filenames: false
         types: [javascript]
         language: node
-        stages: [pre-push]
+        stages: [pre-commit]
+      - id: package
+        name: package
+        entry: npm run package
+        pass_filenames: false
+        language: node
+        stages: [pre-commit]

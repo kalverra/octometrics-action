@@ -1,20 +1,25 @@
 // See: https://rollupjs.org/introduction/
 
 import commonjs from '@rollup/plugin-commonjs'
+import json from '@rollup/plugin-json'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 
-const config = {
-  input: {
-    main: 'src/main.js',
-    post: 'src/post.js'
-  },
+export default {
+  input: ['src/main.js', 'src/post.js'],
   output: {
-    esModule: true,
     dir: 'dist',
-    format: 'es',
-    sourcemap: false
+    format: 'cjs',
+    exports: 'named'
   },
-  plugins: [commonjs(), nodeResolve({ preferBuiltins: true })]
+  external: [
+    '@actions/core',
+    '@actions/github',
+    '@actions/tool-cache',
+    '@actions/artifact',
+    'os',
+    'path',
+    'fs',
+    'child_process'
+  ],
+  plugins: [json(), nodeResolve(), commonjs()]
 }
-
-export default config

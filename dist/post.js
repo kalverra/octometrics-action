@@ -1,33 +1,27 @@
-import { c as coreExports } from './core-D1vDSATZ.js';
-import 'os';
-import 'crypto';
-import 'fs';
-import 'path';
-import 'http';
-import 'https';
-import 'net';
-import 'tls';
-import 'events';
-import 'assert';
-import 'util';
-import 'stream';
-import 'buffer';
-import 'querystring';
-import 'stream/web';
-import 'node:stream';
-import 'node:util';
-import 'node:events';
-import 'worker_threads';
-import 'perf_hooks';
-import 'util/types';
-import 'async_hooks';
-import 'console';
-import 'url';
-import 'zlib';
-import 'string_decoder';
-import 'diagnostics_channel';
-import 'child_process';
-import 'timers';
+'use strict';
+
+var core = require('@actions/core');
+var artifact = require('@actions/artifact');
+
+function _interopNamespaceDefault(e) {
+  var n = Object.create(null);
+  if (e) {
+    Object.keys(e).forEach(function (k) {
+      if (k !== 'default') {
+        var d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(n, k, d.get ? d : {
+          enumerable: true,
+          get: function () { return e[k]; }
+        });
+      }
+    });
+  }
+  n.default = e;
+  return Object.freeze(n);
+}
+
+var core__namespace = /*#__PURE__*/_interopNamespaceDefault(core);
+var artifact__namespace = /*#__PURE__*/_interopNamespaceDefault(artifact);
 
 /**
  * The post step for the action.
@@ -40,14 +34,36 @@ import 'timers';
  */
 async function run() {
   try {
-    coreExports.info('Running post step...');
+    core__namespace.info('Running post step...');
+
+    // Create artifact client
+    const artifactClient = artifact__namespace.create();
+
+    // Upload the monitor file
+    const artifactName = 'octometrics.monitor.json';
+    const files = ['octometrics.monitor.json'];
+    const rootDirectory = process.cwd();
+    const options = {
+      continueOnError: true
+    };
+
+    const uploadResponse = await artifactClient.uploadArtifact(
+      artifactName,
+      files,
+      rootDirectory,
+      options
+    );
+
+    core__namespace.info(
+      `Uploaded artifact ${artifactName} with ID ${uploadResponse.artifactItems.length} items`
+    );
   } catch (error) {
     // Fail the workflow step if an error occurs
-    coreExports.setFailed(error.message);
+    core__namespace.setFailed(error.message);
   }
 }
 
 // Run the post step
 run();
 
-export { run };
+exports.run = run;
