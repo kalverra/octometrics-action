@@ -78,7 +78,7 @@ export async function run() {
     core.info(`Unzipping ${compressedBinaryName}...`)
     const binaryDir = await tc.extractTar(
       compressedBinaryPath,
-      'octometrics_${platformName}_${archName}'
+      `octometrics_${platformName}_${archName}`
     )
     const binaryPath = path.join(binaryDir, 'octometrics')
     core.info(`Unzipped ${compressedBinaryName} to ${binaryPath}`)

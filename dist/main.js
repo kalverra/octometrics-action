@@ -6256,7 +6256,7 @@ async function run() {
     coreExports.info(`Unzipping ${compressedBinaryName}...`);
     const binaryDir = await toolCacheExports.extractTar(
       compressedBinaryPath,
-      'octometrics_${platformName}_${archName}'
+      `octometrics_${platformName}_${archName}`
     );
     const binaryPath = require$$1.join(binaryDir, 'octometrics');
     coreExports.info(`Unzipped ${compressedBinaryName} to ${binaryPath}`);
