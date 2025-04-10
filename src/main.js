@@ -40,7 +40,7 @@ export async function run() {
     }
 
     // Construct the asset name
-    const assetName = `octometrics_${platformName}_${archName}${platform === 'win32' ? '.exe' : ''}`
+    const compressedBinaryName = `octometrics_${platformName}_${archName}${platform === 'win32' ? '.zip' : '.tar.gz'}`
 
     // Get the latest release if no version is specified
     const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
@@ -55,38 +55,45 @@ export async function run() {
           repo: 'octometrics'
         })
 
-    // Find the matching asset
-    const asset = release.data.assets.find((a) => a.name === assetName)
-    if (!asset) {
+    // Find the matching compressed asset
+    const compressedAsset = release.data.assets.find(
+      (a) => a.name === compressedBinaryName
+    )
+    if (!compressedAsset) {
       throw new Error(
-        `Could not find asset ${assetName} in release ${release.data.tag_name}`
+        `Could not find asset ${compressedBinaryName} in release ${release.data.tag_name}`
       )
     }
 
     // Download the asset
     core.info(
-      `Downloading ${assetName} from release ${release.data.tag_name}...`
+      `Downloading ${compressedBinaryName} from release ${release.data.tag_name}...`
     )
-    const downloadPath = await tc.downloadTool(asset.browser_download_url)
+    const compressedBinaryPath = await tc.downloadTool(
+      compressedAsset.browser_download_url
+    )
+
+    // Unzip the compressed binary
+    const binaryPath = await tc.extractTar(compressedBinaryPath)
 
     // Make it executable (except on Windows)
     if (platform !== 'win32') {
-      fs.chmodSync(downloadPath, '755')
+      fs.chmodSync(binaryPath, '755')
     }
 
     // Add to PATH
-    const toolPath = path.dirname(downloadPath)
+    const toolPath = path.dirname(binaryPath)
     core.addPath(toolPath)
 
     core.info(
-      `Successfully installed octometrics ${release.data.tag_name} for ${platformName}/${archName} at ${downloadPath}`
+      `Successfully installed octometrics ${release.data.tag_name} for ${platformName}/${archName} at ${binaryPath}`
     )
     core.setOutput('version', release.data.tag_name)
-    core.setOutput('path', downloadPath)
+    core.setOutput('path', binaryPath)
 
     core.info('Running octometrics monitor...')
     // Run the octometrics binary
-    const child = spawn(`${downloadPath} monitor -o octometrics.monitor.json`)
+    const child = spawn(`${binaryPath} monitor -o octometrics.monitor.json`)
     child.stdout.on('data', (data) => {
       console.log(`stdout: ${data}`)
     })
