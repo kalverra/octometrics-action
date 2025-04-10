@@ -52,13 +52,60 @@ jobs:
       - name: Checkout
         id: checkout
         uses: actions/checkout@v4
-
-      - name: Test Local Action
-        id: test-action
+      - name: Test Octometrics Action
         uses: ./
-        with:
-          who-to-greet: GitHub
-
-      - name: Print Output
-        id: output
-        run: echo "${{ steps.test-action.outputs.time }}"
+      - name: Simulate CPU Usage
+        id: simulate-cpu-usage
+        run: |
+          for i in {1..100}; do
+            echo "Simulating CPU usage - iteration $i"
+            for j in {1..10000}; do
+              num1=$((RANDOM % 1000))
+              num2=$((RANDOM % 1000))
+              sum=$((num1 + num2))
+            done
+          done
+      - name: Simulate Memory Usage
+        id: simulate-memory-usage
+        run: |
+          # Create an array and continuously append data to it
+          declare -a memory_array
+          for i in {1..50}; do
+            echo "Simulating memory usage - iteration $i"
+            # Generate a 10MB string and store it in the array
+            for j in {1..1024}; do
+              memory_array+=("$(head -c 10240 /dev/urandom | base64)")
+            done
+          done
+          # Clear the array to free memory
+          unset memory_array
+      - name: Simulate Disk Usage
+        id: simulate-disk-usage
+        run: |
+          # Create a directory for disk usage simulation
+          mkdir -p disk_test
+          cd disk_test
+          
+          for i in {1..10}; do
+            echo "Simulating disk usage - iteration $i"
+            # Create a 50MB file with random data
+            dd if=/dev/urandom of="test_file_$i" bs=1M count=50
+            # Read the file to simulate disk read operations
+            cat "test_file_$i" > /dev/null
+          done
+          
+          # Clean up the test files
+          cd ..
+          rm -rf disk_test
+      - name: Simulate Network Usage
+        id: simulate-network-usage
+        run: |
+          for i in {1..10}; do
+            echo "Simulating network usage - iteration $i"
+            # Download a webpage and measure the time taken
+            curl -o /dev/null -s -w "Download time: %{time_total}s\n" "https://google.com"
+            # Simulate some DNS lookups
+            dig +short google.com
+            # Ping to simulate network latency
+            ping -c 4 8.8.8.8
+          done
