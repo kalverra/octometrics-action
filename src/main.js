@@ -99,18 +99,25 @@ export async function run() {
     core.setOutput('path', binaryPath)
 
     core.info('Running octometrics monitor...')
-    // Run the octometrics binary
-    const child = spawn(`${binaryPath} monitor -o octometrics.monitor.json`)
+    // Run the octometrics binary with proper command separation
+    const child = spawn(binaryPath, [
+      'monitor',
+      '-o',
+      'octometrics.monitor.json'
+    ])
+
     child.stdout.on('data', (data) => {
-      console.log(`stdout: ${data}`)
+      core.info(`stdout: ${data}`)
     })
 
     child.stderr.on('data', (data) => {
-      console.error(`stderr: ${data}`)
+      core.error(`stderr: ${data}`)
     })
 
     child.on('close', (code) => {
-      console.log(`Process exited with code ${code}`)
+      if (code !== 0) {
+        core.setFailed(`Process exited with code ${code}`)
+      }
     })
   } catch (error) {
     // Fail the workflow step if an error occurs

@@ -6277,18 +6277,25 @@ async function run() {
     coreExports.setOutput('path', binaryPath);
 
     coreExports.info('Running octometrics monitor...');
-    // Run the octometrics binary
-    const child = spawn(`${binaryPath} monitor -o octometrics.monitor.json`);
+    // Run the octometrics binary with proper command separation
+    const child = spawn(binaryPath, [
+      'monitor',
+      '-o',
+      'octometrics.monitor.json'
+    ]);
+
     child.stdout.on('data', (data) => {
-      console.log(`stdout: ${data}`);
+      coreExports.info(`stdout: ${data}`);
     });
 
     child.stderr.on('data', (data) => {
-      console.error(`stderr: ${data}`);
+      coreExports.error(`stderr: ${data}`);
     });
 
     child.on('close', (code) => {
-      console.log(`Process exited with code ${code}`);
+      if (code !== 0) {
+        coreExports.setFailed(`Process exited with code ${code}`);
+      }
     });
   } catch (error) {
     // Fail the workflow step if an error occurs
