@@ -170353,7 +170353,7 @@ async function run() {
     coreExports.info('Uploading octometrics monitor data...');
 
     // Create artifact client
-    const artifactClient = artifactExports.create();
+    const artifactClient = new artifactExports.DefaultArtifactClient();
 
     // Upload the monitor file
     const artifactName = 'octometrics.monitor.json';

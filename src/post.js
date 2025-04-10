@@ -3,7 +3,7 @@
  * This runs after the main action completes, regardless of success or failure.
  */
 import * as core from '@actions/core'
-import { create } from '@actions/artifact'
+import { DefaultArtifactClient } from '@actions/artifact'
 
 /**
  * The main function for the action.
@@ -14,7 +14,7 @@ export async function run() {
     core.info('Uploading octometrics monitor data...')
 
     // Create artifact client
-    const artifactClient = create()
+    const artifactClient = new DefaultArtifactClient()
 
     // Upload the monitor file
     const artifactName = 'octometrics.monitor.json'
