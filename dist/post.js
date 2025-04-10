@@ -170350,7 +170350,7 @@ var artifactExports = requireArtifact();
  */
 async function run() {
   try {
-    coreExports.info('Running post step...');
+    coreExports.info('Uploading octometrics monitor data...');
 
     // Create artifact client
     const artifactClient = artifactExports.create();
@@ -170371,7 +170371,7 @@ async function run() {
     );
 
     coreExports.info(
-      `Uploaded artifact ${artifactName} with ID ${uploadResponse.artifactItems.length} items`
+      `Uploaded artifact ${artifactName} with ${uploadResponse.artifactItems.length} items`
     );
   } catch (error) {
     // Fail the workflow step if an error occurs

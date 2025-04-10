@@ -11,7 +11,7 @@ import * as artifact from '@actions/artifact'
  */
 export async function run() {
   try {
-    core.info('Running post step...')
+    core.info('Uploading octometrics monitor data...')
 
     // Create artifact client
     const artifactClient = artifact.create()
@@ -32,7 +32,7 @@ export async function run() {
     )
 
     core.info(
-      `Uploaded artifact ${artifactName} with ID ${uploadResponse.artifactItems.length} items`
+      `Uploaded artifact ${artifactName} with ${uploadResponse.artifactItems.length} items`
     )
   } catch (error) {
     // Fail the workflow step if an error occurs
