@@ -65,16 +65,23 @@ export async function run() {
       )
     }
 
-    // Download the asset
+    // Download the compressed binary
     core.info(
       `Downloading ${compressedBinaryName} from release ${release.data.tag_name}...`
     )
     const compressedBinaryPath = await tc.downloadTool(
       compressedAsset.browser_download_url
     )
+    core.info(`Downloaded ${compressedBinaryName} to ${compressedBinaryPath}`)
 
     // Unzip the compressed binary
-    const binaryPath = await tc.extractTar(compressedBinaryPath)
+    core.info(`Unzipping ${compressedBinaryName}...`)
+    const binaryDir = await tc.extractTar(
+      compressedBinaryPath,
+      'octometrics_${platformName}_${archName}'
+    )
+    const binaryPath = path.join(binaryDir, 'octometrics')
+    core.info(`Unzipped ${compressedBinaryName} to ${binaryPath}`)
 
     // Make it executable (except on Windows)
     if (platform !== 'win32') {

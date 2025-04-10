@@ -6243,16 +6243,23 @@ async function run() {
       )
     }
 
-    // Download the asset
+    // Download the compressed binary
     coreExports.info(
       `Downloading ${compressedBinaryName} from release ${release.data.tag_name}...`
     );
     const compressedBinaryPath = await toolCacheExports.downloadTool(
       compressedAsset.browser_download_url
     );
+    coreExports.info(`Downloaded ${compressedBinaryName} to ${compressedBinaryPath}`);
 
     // Unzip the compressed binary
-    const binaryPath = await toolCacheExports.extractTar(compressedBinaryPath);
+    coreExports.info(`Unzipping ${compressedBinaryName}...`);
+    const binaryDir = await toolCacheExports.extractTar(
+      compressedBinaryPath,
+      'octometrics_${platformName}_${archName}'
+    );
+    const binaryPath = require$$1.join(binaryDir, 'octometrics');
+    coreExports.info(`Unzipped ${compressedBinaryName} to ${binaryPath}`);
 
     // Make it executable (except on Windows)
     if (platform !== 'win32') {
