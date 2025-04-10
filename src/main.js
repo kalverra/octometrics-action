@@ -112,19 +112,10 @@ export async function run() {
       }
     )
 
-    child.stdout.on('data', (data) => {
-      core.info(`stdout: ${data}`)
-    })
+    child.unref()
 
-    child.stderr.on('data', (data) => {
-      core.error(`stderr: ${data}`)
-    })
-
-    child.on('close', (code) => {
-      if (code !== 0) {
-        core.setFailed(`Process exited with code ${code}`)
-      }
-    })
+    core.saveState('octometrics_monitor_pid', child.pid?.toString())
+    core.info('Octometrics monitor started')
   } catch (error) {
     // Fail the workflow step if an error occurs
     core.setFailed(error.message)

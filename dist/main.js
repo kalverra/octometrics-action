@@ -6290,19 +6290,10 @@ async function run() {
       }
     );
 
-    child.stdout.on('data', (data) => {
-      coreExports.info(`stdout: ${data}`);
-    });
+    child.unref();
 
-    child.stderr.on('data', (data) => {
-      coreExports.error(`stderr: ${data}`);
-    });
-
-    child.on('close', (code) => {
-      if (code !== 0) {
-        coreExports.setFailed(`Process exited with code ${code}`);
-      }
-    });
+    coreExports.saveState('octometrics_monitor_pid', child.pid?.toString());
+    coreExports.info('Octometrics monitor started');
   } catch (error) {
     // Fail the workflow step if an error occurs
     coreExports.setFailed(error.message);
