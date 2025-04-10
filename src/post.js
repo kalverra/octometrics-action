@@ -11,6 +11,17 @@ import { DefaultArtifactClient } from '@actions/artifact'
  */
 export async function run() {
   try {
+    // Check if we're running in a GitHub Actions environment
+    const isGitHubActions = process.env.GITHUB_ACTIONS === 'true'
+    const hasRuntimeToken = !!process.env.ACTIONS_RUNTIME_TOKEN
+
+    if (!isGitHubActions || !hasRuntimeToken) {
+      core.info(
+        'Not running in GitHub Actions environment or missing required tokens. Skipping artifact upload.'
+      )
+      return
+    }
+
     core.info('Uploading octometrics monitor data...')
 
     // Create artifact client
@@ -35,8 +46,8 @@ export async function run() {
       `Uploaded artifact ${artifactName} with ${uploadResponse.artifactItems.length} items`
     )
   } catch (error) {
-    // Fail the workflow step if an error occurs
-    core.setFailed(error.message)
+    // Log the error but don't fail the workflow
+    core.warning(`Failed to upload artifacts: ${error.message}`)
   }
 }
 
