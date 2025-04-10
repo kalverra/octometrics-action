@@ -30,6 +30,7 @@ jobs:
       - name: Simulate CPU Usage
         id: simulate-cpu-usage
         run: |
+          echo "Simulating CPU usage..."
           for i in {1..100}; do
             echo "Simulating CPU usage - iteration $i"
             for j in {1..10000}; do
@@ -42,6 +43,7 @@ jobs:
       - name: Simulate Memory Usage
         id: simulate-memory-usage
         run: |
+          echo "Simulating memory usage..."
           # Create an array and continuously append data to it
           declare -a memory_array
           for i in {1..5}; do
@@ -57,6 +59,7 @@ jobs:
       - name: Simulate Disk Usage
         id: simulate-disk-usage
         run: |
+          echo "Simulating disk usage..."
           # Create a directory for disk usage simulation
           mkdir -p disk_test
           cd disk_test
@@ -76,6 +79,7 @@ jobs:
       - name: Simulate Network Usage
         id: simulate-network-usage
         run: |
+          echo "Simulating network usage..."
           for i in {1..10}; do
             echo "Simulating network usage - iteration $i"
             # Download a webpage and measure the time taken

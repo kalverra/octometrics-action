@@ -100,11 +100,17 @@ export async function run() {
 
     core.info('Running octometrics monitor...')
     // Run the octometrics binary with proper command separation
-    const child = spawn(binaryPath, [
-      'monitor',
-      '-o',
-      'octometrics.monitor.json'
-    ])
+    const child = spawn(
+      binaryPath,
+      ['monitor', '-o', 'octometrics.monitor.json'],
+      {
+        detached: true,
+        stdio: 'ignore',
+        env: {
+          ...process.env
+        }
+      }
+    )
 
     child.stdout.on('data', (data) => {
       core.info(`stdout: ${data}`)
