@@ -41,10 +41,6 @@ export async function run() {
       rootDirectory,
       options
     )
-
-    core.info(
-      `Uploaded artifact ${artifactName} with ${uploadResponse.artifactItems.length} items`
-    )
   } catch (error) {
     // Log the error but don't fail the workflow
     core.warning(`Failed to upload artifacts: ${error.message}`)

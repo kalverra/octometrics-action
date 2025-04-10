@@ -170380,10 +170380,6 @@ async function run() {
       rootDirectory,
       options
     );
-
-    coreExports.info(
-      `Uploaded artifact ${artifactName} with ${uploadResponse.artifactItems.length} items`
-    );
   } catch (error) {
     // Log the error but don't fail the workflow
     coreExports.warning(`Failed to upload artifacts: ${error.message}`);

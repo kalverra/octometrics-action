@@ -46,7 +46,7 @@ jobs:
           echo "Simulating memory usage..."
           # Create an array and continuously append data to it
           declare -a memory_array
-          for i in {1..5}; do
+          for i in {1..2}; do
             echo "Simulating memory usage - iteration $i"
             # Generate a 10MB string and store it in the array
             for j in {1..1024}; do
