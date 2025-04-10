@@ -4,6 +4,7 @@ import * as tc from '@actions/tool-cache'
 import * as os from 'os'
 import * as path from 'path'
 import * as fs from 'fs'
+import { spawn } from 'child_process'
 
 /**
  * The main function for the action.
@@ -84,11 +85,20 @@ export async function run() {
     core.setOutput('version', release.data.tag_name)
     core.setOutput('path', downloadPath)
 
+    core.info('Running octometrics monitor...')
     // Run the octometrics binary
-    const result = await exec(
-      `${downloadPath} monitor -o octometrics.monitor.json`
-    )
-    core.info(`Octometrics binary returned: ${result.stdout}`)
+    const child = spawn(`${downloadPath} monitor -o octometrics.monitor.json`)
+    child.stdout.on('data', (data) => {
+      console.log(`stdout: ${data}`)
+    })
+
+    child.stderr.on('data', (data) => {
+      console.error(`stderr: ${data}`)
+    })
+
+    child.on('close', (code) => {
+      console.log(`Process exited with code ${code}`)
+    })
   } catch (error) {
     // Fail the workflow step if an error occurs
     core.setFailed(error.message)

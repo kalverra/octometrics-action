@@ -3,14 +3,20 @@ repos:
     rev: v5.0.0
     hooks:
       - id: check-yaml
+        exclude: 'node_modules/|dist/'
       - id: detect-aws-credentials
+        exclude: 'node_modules/|dist/'
       - id: detect-private-key
+        exclude: 'node_modules/|dist/'
       - id: end-of-file-fixer
+        exclude: 'node_modules/|dist/'
       - id: trailing-whitespace
+        exclude: 'node_modules/|dist/'
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
     hooks:
       - id: codespell
+        exclude: 'node_modules/|dist/'
   - repo: local
     hooks:
       - id: prettier
@@ -20,9 +26,11 @@ repos:
         types: [javascript]
         language: node
         stages: [pre-commit]
+        exclude: 'node_modules/|dist/'
       - id: package
         name: package
         entry: npm run package
         pass_filenames: false
         language: node
         stages: [pre-commit]
+        exclude: 'node_modules/|dist/'
