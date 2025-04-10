@@ -13,7 +13,6 @@ import { spawn } from 'child_process'
 export async function run() {
   try {
     const version = core.getInput('version', { required: false })
-    const token = core.getInput('token', { required: false })
 
     // Determine OS and architecture
     const platform = os.platform()
@@ -44,7 +43,7 @@ export async function run() {
     const assetName = `octometrics_${platformName}_${archName}${platform === 'win32' ? '.exe' : ''}`
 
     // Get the latest release if no version is specified
-    const octokit = github.getOctokit(token || process.env.GITHUB_TOKEN)
+    const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
     const release = version
       ? await octokit.rest.repos.getReleaseByTag({
           owner: 'kalverra',

@@ -8,10 +8,6 @@ inputs:
       'Version of octometrics to install (e.g. v1.0.0). If not specified, latest
       release will be used.'
     required: false
-  token:
-    description:
-      'GitHub token for accessing releases. Defaults to GITHUB_TOKEN.'
-    required: false
 
 outputs:
   version:

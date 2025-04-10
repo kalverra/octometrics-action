@@ -6191,7 +6191,6 @@ var toolCacheExports = requireToolCache();
 async function run() {
   try {
     const version = coreExports.getInput('version', { required: false });
-    const token = coreExports.getInput('token', { required: false });
 
     // Determine OS and architecture
     const platform = require$$0.platform();
@@ -6222,7 +6221,7 @@ async function run() {
     const assetName = `octometrics_${platformName}_${archName}${platform === 'win32' ? '.exe' : ''}`;
 
     // Get the latest release if no version is specified
-    const octokit = githubExports.getOctokit(token || process.env.GITHUB_TOKEN);
+    const octokit = githubExports.getOctokit(process.env.GITHUB_TOKEN);
     const release = version
       ? await octokit.rest.repos.getReleaseByTag({
           owner: 'kalverra',
