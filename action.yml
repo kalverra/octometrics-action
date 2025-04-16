@@ -1,5 +1,5 @@
 name: 'Octometrics Action'
-description: 'Download and install octometrics binary'
+description: 'Use octometrics to monitor detailed profiling information about your GitHub Actions workflows'
 author: 'Adam Hamrick'
 
 inputs:
