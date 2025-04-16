@@ -1,8 +1,13 @@
 # octometrics-action
 
-Use [octometrics](https://github.com/kalverra/octometrics) in your GitHub Actions workflows
+Use [octometrics](https://github.com/kalverra/octometrics) in your GitHub Actions workflows to monitor detailed profiling information:
 
-## Usage
+* CPU
+* Memory
+* Disk
+* I/O
+
+## Example usage
 
 ```yaml
 example-job:
@@ -21,6 +26,22 @@ example-job:
           run: |
             echo "Hello World!"
 ```
+
+## Inputs
+
+### `version`
+
+**Optional** The specific version of [octometrics](https://github.com/kalverra/octometrics) to use, e.g. `v1.0.1`. Defaults to `latest` if not supplied. Can also use a path name like `./custom-binary` to use a custom built binary (useful for testing).
+
+## Outputs
+
+### `version`
+
+The version of [octometrics](https://github.com/kalverra/octometrics) that was used.
+
+### `path`
+
+The path of the octometrics binary that was downloaded.
 
 ## Contributing
 
