@@ -15,7 +15,10 @@ var monitorPath = '/tmp/' + artifactName
  */
 export async function run() {
   try {
+    const platform = os.platform()
+    const arch = os.arch()
     const version = core.getInput('version', { required: true })
+    var releaseBinaryPath = ''
 
     // Check if version is a release format (vX.X.X or 'latest')
     const isRelease = version === 'latest' || /^v\d+\.\d+\.\d+$/.test(version)
@@ -26,10 +29,9 @@ export async function run() {
       if (!fs.existsSync(version)) {
         throw new Error(`Local binary not found at ${version}`)
       }
+      releaseBinaryPath = version
     } else {
       // Default behavior: download from release
-      const platform = os.platform()
-      const arch = os.arch()
 
       // Map platform and arch to GitHub release asset names
       const platformMap = {
@@ -93,7 +95,7 @@ export async function run() {
         compressedBinaryPath,
         `octometrics_${platformName}_${archName}`
       )
-      const releaseBinaryPath = path.join(binaryDir, 'octometrics')
+      releaseBinaryPath = path.join(binaryDir, 'octometrics')
       core.info(`Unzipped ${compressedBinaryName} to ${releaseBinaryPath}`)
       core.info(
         `Successfully installed octometrics ${release.data.tag_name} for ${platformName}/${archName} at ${releaseBinaryPath}`

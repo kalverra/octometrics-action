@@ -1,7 +1,7 @@
 import { r as requireLib, a as requireUndici, g as getUserAgent, o as once, D as Deprecation, b as beforeAfterHookExports, c as getAugmentedNamespace, d as requireCore, e as requireIo, f as requireExec, h as commonjsGlobal, i as coreExports } from './once-DunWvxhB.js';
-import * as require$$0 from 'fs';
+import * as require$$0$1 from 'fs';
 import require$$0__default from 'fs';
-import * as require$$0$1 from 'os';
+import * as require$$0 from 'os';
 import require$$0__default$1 from 'os';
 import require$$0$2 from 'crypto';
 import require$$2$1, { spawn } from 'child_process';
@@ -6193,7 +6193,10 @@ var monitorPath = '/tmp/' + artifactName;
  */
 async function run() {
   try {
+    const platform = require$$0.platform();
+    const arch = require$$0.arch();
     const version = coreExports.getInput('version', { required: true });
+    var releaseBinaryPath = '';
 
     // Check if version is a release format (vX.X.X or 'latest')
     const isRelease = version === 'latest' || /^v\d+\.\d+\.\d+$/.test(version);
@@ -6201,13 +6204,12 @@ async function run() {
     if (!isRelease) {
       // Treat version as local binary path
       coreExports.info(`Using local binary at ${version}`);
-      if (!require$$0.existsSync(version)) {
+      if (!require$$0$1.existsSync(version)) {
         throw new Error(`Local binary not found at ${version}`)
       }
+      releaseBinaryPath = version;
     } else {
       // Default behavior: download from release
-      const platform = require$$0$1.platform();
-      const arch = require$$0$1.arch();
 
       // Map platform and arch to GitHub release asset names
       const platformMap = {
@@ -6271,7 +6273,7 @@ async function run() {
         compressedBinaryPath,
         `octometrics_${platformName}_${archName}`
       );
-      const releaseBinaryPath = require$$1.join(binaryDir, 'octometrics');
+      releaseBinaryPath = require$$1.join(binaryDir, 'octometrics');
       coreExports.info(`Unzipped ${compressedBinaryName} to ${releaseBinaryPath}`);
       coreExports.info(
         `Successfully installed octometrics ${release.data.tag_name} for ${platformName}/${archName} at ${releaseBinaryPath}`
@@ -6281,7 +6283,7 @@ async function run() {
 
     // Make it executable (except on Windows)
     if (platform !== 'win32') {
-      require$$0.chmodSync(releaseBinaryPath, '755');
+      require$$0$1.chmodSync(releaseBinaryPath, '755');
     }
 
     // Add to PATH
