@@ -6195,7 +6195,10 @@ async function run() {
   try {
     const platform = require$$0.platform();
     const arch = require$$0.arch();
-    const version = coreExports.getInput('version', { required: true });
+    var version = coreExports.getInput('version', { required: false });
+    if (!version) {
+      version = 'latest';
+    }
     var releaseBinaryPath = '';
 
     // Check if version is a release format (vX.X.X or 'latest')
