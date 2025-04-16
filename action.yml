@@ -11,6 +11,11 @@ inputs:
       release will be used.'
     default: 'latest'
     required: false
+  interval:
+    description:
+      'Go duration string for how often to poll for profiling information'
+    default: '1s'
+    required: false
 
 outputs:
   version:

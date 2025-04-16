@@ -6195,10 +6195,17 @@ async function run() {
   try {
     const platform = require$$0.platform();
     const arch = require$$0.arch();
+
     var version = coreExports.getInput('version', { required: false });
     if (!version) {
       version = 'latest';
     }
+
+    var interval = coreExports.getInput('interval', { required: false });
+    if (!interval) {
+      interval = '1s';
+    }
+
     var releaseBinaryPath = '';
 
     // Check if version is a release format (vX.X.X or 'latest')
@@ -6297,15 +6304,21 @@ async function run() {
 
     coreExports.setOutput('path', releaseBinaryPath);
     coreExports.info('Running octometrics monitor...');
-    coreExports.info(`Running command: ${releaseBinaryPath} monitor -o ${monitorPath}`);
+    coreExports.info(
+      `Running command: ${releaseBinaryPath} monitor -o ${monitorPath} -i ${interval}`
+    );
     // Run the octometrics binary with proper command separation
-    const child = spawn(releaseBinaryPath, ['monitor', '-o', monitorPath], {
-      detached: true,
-      stdio: 'ignore',
-      env: {
-        ...process.env
+    const child = spawn(
+      releaseBinaryPath,
+      ['monitor', '-o', monitorPath, '-i', interval],
+      {
+        detached: true,
+        stdio: 'ignore',
+        env: {
+          ...process.env
+        }
       }
-    });
+    );
 
     child.unref();
 
