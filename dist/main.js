@@ -1,15 +1,15 @@
-import { r as requireLib, a as requireUndici, g as getUserAgent, o as once, D as Deprecation, b as beforeAfterHookExports, c as getAugmentedNamespace, d as requireCore, e as requireIo, f as requireExec, h as commonjsGlobal, i as coreExports } from './once-DqclpVcA.js';
-import * as fs from 'fs';
-import fs__default from 'fs';
-import * as require$$0 from 'os';
-import require$$0__default from 'os';
-import require$$0$1 from 'crypto';
+import { r as requireLib, a as requireUndici, g as getUserAgent, o as once, D as Deprecation, b as beforeAfterHookExports, c as getAugmentedNamespace, d as requireCore, e as requireIo, f as requireExec, h as commonjsGlobal, i as coreExports } from './once-DunWvxhB.js';
+import * as require$$0 from 'fs';
+import require$$0__default from 'fs';
+import * as require$$0$1 from 'os';
+import require$$0__default$1 from 'os';
+import require$$0$2 from 'crypto';
 import require$$2$1, { spawn } from 'child_process';
-import * as path from 'path';
-import path__default from 'path';
-import require$$0$2 from 'stream';
-import require$$0__default$1 from 'util';
-import require$$0$3 from 'assert';
+import * as require$$1 from 'path';
+import require$$1__default from 'path';
+import require$$0$3 from 'stream';
+import require$$0__default$2 from 'util';
+import require$$0$4 from 'assert';
 import 'http';
 import 'https';
 import 'net';
@@ -43,8 +43,8 @@ function requireContext () {
 	hasRequiredContext = 1;
 	Object.defineProperty(context, "__esModule", { value: true });
 	context.Context = void 0;
-	const fs_1 = fs__default;
-	const os_1 = require$$0__default;
+	const fs_1 = require$$0__default;
+	const os_1 = require$$0__default$1;
 	class Context {
 	    /**
 	     * Hydrate the context from the environment
@@ -5319,9 +5319,9 @@ function requireManifest () {
 		const core_1 = requireCore();
 		// needs to be require for core node modules to be mocked
 		/* eslint @typescript-eslint/no-require-imports: 0 */
-		const os = require$$0__default;
+		const os = require$$0__default$1;
 		const cp = require$$2$1;
-		const fs = fs__default;
+		const fs = require$$0__default;
 		function _findMatch(versionSpec, stable, candidates, archFilter) {
 		    return __awaiter(this, void 0, void 0, function* () {
 		        const platFilter = os.platform();
@@ -5550,16 +5550,16 @@ function requireToolCache () {
 	toolCache.evaluateVersions = toolCache.isExplicitVersion = toolCache.findFromManifest = toolCache.getManifestFromRepo = toolCache.findAllVersions = toolCache.find = toolCache.cacheFile = toolCache.cacheDir = toolCache.extractZip = toolCache.extractXar = toolCache.extractTar = toolCache.extract7z = toolCache.downloadTool = toolCache.HTTPError = void 0;
 	const core = __importStar(requireCore());
 	const io = __importStar(requireIo());
-	const crypto = __importStar(require$$0$1);
-	const fs = __importStar(fs__default);
+	const crypto = __importStar(require$$0$2);
+	const fs = __importStar(require$$0__default);
 	const mm = __importStar(requireManifest());
-	const os = __importStar(require$$0__default);
-	const path = __importStar(path__default);
+	const os = __importStar(require$$0__default$1);
+	const path = __importStar(require$$1__default);
 	const httpm = __importStar(requireLib());
 	const semver = __importStar(requireSemver());
-	const stream = __importStar(require$$0$2);
-	const util = __importStar(require$$0__default$1);
-	const assert_1 = require$$0$3;
+	const stream = __importStar(require$$0$3);
+	const util = __importStar(require$$0__default$2);
+	const assert_1 = require$$0$4;
 	const exec_1 = requireExec();
 	const retry_helper_1 = requireRetryHelper();
 	class HTTPError extends Error {
@@ -6193,155 +6193,102 @@ var monitorPath = '/tmp/' + artifactName;
  */
 async function run() {
   try {
-    const version = coreExports.getInput('version', { required: false });
-    const binarySource = coreExports.getInput('binary-source', { required: false }); // 'release', 'artifact', or 'local'
-    const binaryPath = coreExports.getInput('binary-path', { required: false }); // Path to binary or artifact name
+    const version = coreExports.getInput('version', { required: true });
 
-    // If binary-source is 'local', use the provided path directly
-    if (binarySource === 'local' && binaryPath) {
-      coreExports.info(`Using local binary at ${binaryPath}`);
-      if (!fs.existsSync(binaryPath)) {
-        throw new Error(`Local binary not found at ${binaryPath}`)
-      }
-      // Make it executable (except on Windows)
-      if (require$$0.platform() !== 'win32') {
-        fs.chmodSync(binaryPath, '755');
-      }
-      coreExports.addPath(path.dirname(binaryPath));
-      coreExports.setOutput('version', 'local');
-      coreExports.setOutput('path', binaryPath);
-      return
-    }
+    // Check if version is a release format (vX.X.X or 'latest')
+    const isRelease = version === 'latest' || /^v\d+\.\d+\.\d+$/.test(version);
 
-    // If binary-source is 'artifact', download from GitHub artifacts
-    if (binarySource === 'artifact' && binaryPath) {
-      coreExports.info(`Downloading binary from artifact: ${binaryPath}`);
+    if (!isRelease) {
+      // Treat version as local binary path
+      coreExports.info(`Using local binary at ${version}`);
+      if (!require$$0.existsSync(version)) {
+        throw new Error(`Local binary not found at ${version}`)
+      }
+    } else {
+      // Default behavior: download from release
+      const platform = require$$0$1.platform();
+      const arch = require$$0$1.arch();
+
+      // Map platform and arch to GitHub release asset names
+      const platformMap = {
+        darwin: 'darwin',
+        linux: 'linux',
+        win32: 'windows'
+      };
+
+      const archMap = {
+        x64: 'amd64',
+        arm64: 'arm64'
+      };
+
+      const platformName = platformMap[platform];
+      const archName = archMap[arch];
+
+      if (!platformName || !archName) {
+        throw new Error(
+          `Unsupported platform (${platform}) or architecture (${arch})`
+        )
+      }
+
+      // Construct the asset name
+      const compressedBinaryName = `octometrics_${platformName}_${archName}${platform === 'win32' ? '.zip' : '.tar.gz'}`;
+
+      // Get the latest release if no version is specified
       const octokit = githubExports.getOctokit(process.env.GITHUB_TOKEN);
-      const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
+      const release = version
+        ? await octokit.rest.repos.getReleaseByTag({
+            owner: 'kalverra',
+            repo: 'octometrics',
+            tag: version
+          })
+        : await octokit.rest.repos.getLatestRelease({
+            owner: 'kalverra',
+            repo: 'octometrics'
+          });
 
-      // Get the artifact
-      const { data: artifacts } =
-        await octokit.rest.actions.listArtifactsForRepo({
-          owner,
-          repo,
-          name: binaryPath
-        });
-
-      if (artifacts.length === 0) {
-        throw new Error(`Artifact ${binaryPath} not found`)
+      // Find the matching compressed asset
+      const compressedAsset = release.data.assets.find(
+        (a) => a.name === compressedBinaryName
+      );
+      if (!compressedAsset) {
+        throw new Error(
+          `Could not find asset ${compressedBinaryName} in release ${release.data.tag_name}`
+        )
       }
 
-      const artifact = artifacts[0];
-      const downloadUrl = await octokit.rest.actions.downloadArtifact({
-        owner,
-        repo,
-        artifact_id: artifact.id,
-        archive_format: 'zip'
-      });
+      // Download the compressed binary
+      coreExports.info(
+        `Downloading ${compressedBinaryName} from release ${release.data.tag_name}...`
+      );
+      const compressedBinaryPath = await toolCacheExports.downloadTool(
+        compressedAsset.browser_download_url
+      );
+      coreExports.info(`Downloaded ${compressedBinaryName} to ${compressedBinaryPath}`);
 
-      const artifactPath = await toolCacheExports.downloadTool(downloadUrl.url);
-      const extractedPath = await toolCacheExports.extractZip(artifactPath);
-      const extractedBinaryPath = path.join(extractedPath, 'octometrics');
-
-      if (!fs.existsSync(extractedBinaryPath)) {
-        throw new Error(`Binary not found in artifact ${binaryPath}`)
-      }
-
-      // Make it executable (except on Windows)
-      if (require$$0.platform() !== 'win32') {
-        fs.chmodSync(extractedBinaryPath, '755');
-      }
-
-      coreExports.addPath(path.dirname(extractedBinaryPath));
-      coreExports.setOutput('version', 'artifact');
-      coreExports.setOutput('path', extractedBinaryPath);
-      return
+      // Unzip the compressed binary
+      coreExports.info(`Unzipping ${compressedBinaryName}...`);
+      const binaryDir = await toolCacheExports.extractTar(
+        compressedBinaryPath,
+        `octometrics_${platformName}_${archName}`
+      );
+      const releaseBinaryPath = require$$1.join(binaryDir, 'octometrics');
+      coreExports.info(`Unzipped ${compressedBinaryName} to ${releaseBinaryPath}`);
+      coreExports.info(
+        `Successfully installed octometrics ${release.data.tag_name} for ${platformName}/${archName} at ${releaseBinaryPath}`
+      );
+      coreExports.setOutput('version', release.data.tag_name);
     }
-
-    // Default behavior: download from release
-    const platform = require$$0.platform();
-    const arch = require$$0.arch();
-
-    // Map platform and arch to GitHub release asset names
-    const platformMap = {
-      darwin: 'darwin',
-      linux: 'linux',
-      win32: 'windows'
-    };
-
-    const archMap = {
-      x64: 'amd64',
-      arm64: 'arm64'
-    };
-
-    const platformName = platformMap[platform];
-    const archName = archMap[arch];
-
-    if (!platformName || !archName) {
-      throw new Error(
-        `Unsupported platform (${platform}) or architecture (${arch})`
-      )
-    }
-
-    // Construct the asset name
-    const compressedBinaryName = `octometrics_${platformName}_${archName}${platform === 'win32' ? '.zip' : '.tar.gz'}`;
-
-    // Get the latest release if no version is specified
-    const octokit = githubExports.getOctokit(process.env.GITHUB_TOKEN);
-    const release = version
-      ? await octokit.rest.repos.getReleaseByTag({
-          owner: 'kalverra',
-          repo: 'octometrics',
-          tag: version
-        })
-      : await octokit.rest.repos.getLatestRelease({
-          owner: 'kalverra',
-          repo: 'octometrics'
-        });
-
-    // Find the matching compressed asset
-    const compressedAsset = release.data.assets.find(
-      (a) => a.name === compressedBinaryName
-    );
-    if (!compressedAsset) {
-      throw new Error(
-        `Could not find asset ${compressedBinaryName} in release ${release.data.tag_name}`
-      )
-    }
-
-    // Download the compressed binary
-    coreExports.info(
-      `Downloading ${compressedBinaryName} from release ${release.data.tag_name}...`
-    );
-    const compressedBinaryPath = await toolCacheExports.downloadTool(
-      compressedAsset.browser_download_url
-    );
-    coreExports.info(`Downloaded ${compressedBinaryName} to ${compressedBinaryPath}`);
-
-    // Unzip the compressed binary
-    coreExports.info(`Unzipping ${compressedBinaryName}...`);
-    const binaryDir = await toolCacheExports.extractTar(
-      compressedBinaryPath,
-      `octometrics_${platformName}_${archName}`
-    );
-    const releaseBinaryPath = path.join(binaryDir, 'octometrics');
-    coreExports.info(`Unzipped ${compressedBinaryName} to ${releaseBinaryPath}`);
 
     // Make it executable (except on Windows)
     if (platform !== 'win32') {
-      fs.chmodSync(releaseBinaryPath, '755');
+      require$$0.chmodSync(releaseBinaryPath, '755');
     }
 
     // Add to PATH
-    const toolPath = path.dirname(releaseBinaryPath);
+    const toolPath = require$$1.dirname(releaseBinaryPath);
     coreExports.addPath(toolPath);
 
-    coreExports.info(
-      `Successfully installed octometrics ${release.data.tag_name} for ${platformName}/${archName} at ${releaseBinaryPath}`
-    );
-    coreExports.setOutput('version', release.data.tag_name);
     coreExports.setOutput('path', releaseBinaryPath);
-
     coreExports.info('Running octometrics monitor...');
     // Run the octometrics binary with proper command separation
     const child = spawn(releaseBinaryPath, ['monitor', '-o', monitorPath], {
