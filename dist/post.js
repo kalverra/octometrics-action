@@ -170344,6 +170344,9 @@ var artifactExports = requireArtifact();
  * This runs after the main action completes, regardless of success or failure.
  */
 
+const artifactName = `${process.env.GITHUB_JOB}-octometrics.monitor.json`;
+const monitorPath = '/tmp/' + artifactName;
+
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -170368,7 +170371,7 @@ async function run() {
 
     // Upload the monitor file
     const files = [monitorPath];
-    const rootDirectory = process.cwd();
+    const rootDirectory = '/tmp';
     const options = {
       continueOnError: true
     };

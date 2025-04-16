@@ -34,3 +34,4 @@ repos:
         language: node
         stages: [pre-commit]
         exclude: 'node_modules/|dist/'
+default_install_hook_types: [pre-commit, pre-push]

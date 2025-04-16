@@ -6185,7 +6185,7 @@ function requireToolCache () {
 var toolCacheExports = requireToolCache();
 
 const artifactName = `${process.env.GITHUB_JOB}-octometrics.monitor.json`;
-var monitorPath = '/tmp/' + artifactName;
+const monitorPath = '/tmp/' + artifactName;
 
 /**
  * The main function for the action.
@@ -6193,95 +6193,113 @@ var monitorPath = '/tmp/' + artifactName;
  */
 async function run() {
   try {
-    const version = coreExports.getInput('version', { required: false });
-
-    // Determine OS and architecture
     const platform = require$$0.platform();
     const arch = require$$0.arch();
-
-    // Map platform and arch to GitHub release asset names
-    const platformMap = {
-      darwin: 'darwin',
-      linux: 'linux',
-      win32: 'windows'
-    };
-
-    const archMap = {
-      x64: 'amd64',
-      arm64: 'arm64'
-    };
-
-    const platformName = platformMap[platform];
-    const archName = archMap[arch];
-
-    if (!platformName || !archName) {
-      throw new Error(
-        `Unsupported platform (${platform}) or architecture (${arch})`
-      )
+    var version = coreExports.getInput('version', { required: false });
+    if (!version) {
+      version = 'latest';
     }
+    var releaseBinaryPath = '';
 
-    // Construct the asset name
-    const compressedBinaryName = `octometrics_${platformName}_${archName}${platform === 'win32' ? '.zip' : '.tar.gz'}`;
+    // Check if version is a release format (vX.X.X or 'latest')
+    const isRelease = version === 'latest' || /^v\d+\.\d+\.\d+$/.test(version);
 
-    // Get the latest release if no version is specified
-    const octokit = githubExports.getOctokit(process.env.GITHUB_TOKEN);
-    const release = version
-      ? await octokit.rest.repos.getReleaseByTag({
-          owner: 'kalverra',
-          repo: 'octometrics',
-          tag: version
-        })
-      : await octokit.rest.repos.getLatestRelease({
-          owner: 'kalverra',
-          repo: 'octometrics'
-        });
+    if (!isRelease) {
+      // Treat version as local binary path
+      coreExports.info(`Using local binary at ${version}`);
+      if (!require$$0$1.existsSync(version)) {
+        throw new Error(`Local binary not found at ${version}`)
+      }
+      releaseBinaryPath = version;
+    } else {
+      // Default behavior: download from release
 
-    // Find the matching compressed asset
-    const compressedAsset = release.data.assets.find(
-      (a) => a.name === compressedBinaryName
-    );
-    if (!compressedAsset) {
-      throw new Error(
-        `Could not find asset ${compressedBinaryName} in release ${release.data.tag_name}`
-      )
+      // Map platform and arch to GitHub release asset names
+      const platformMap = {
+        darwin: 'darwin',
+        linux: 'linux',
+        win32: 'windows'
+      };
+
+      const archMap = {
+        x64: 'amd64',
+        arm64: 'arm64'
+      };
+
+      const platformName = platformMap[platform];
+      const archName = archMap[arch];
+
+      if (!platformName || !archName) {
+        throw new Error(
+          `Unsupported platform (${platform}) or architecture (${arch})`
+        )
+      }
+
+      // Construct the asset name
+      const compressedBinaryName = `octometrics_${platformName}_${archName}${platform === 'win32' ? '.zip' : '.tar.gz'}`;
+
+      // Get the latest release if no version is specified
+      const octokit = githubExports.getOctokit(process.env.GITHUB_TOKEN);
+      coreExports.info(`Getting release for version ${version}`);
+      const release =
+        version === 'latest'
+          ? await octokit.rest.repos.getLatestRelease({
+              owner: 'kalverra',
+              repo: 'octometrics'
+            })
+          : await octokit.rest.repos.getReleaseByTag({
+              owner: 'kalverra',
+              repo: 'octometrics',
+              tag: version
+            });
+
+      // Find the matching compressed asset
+      const compressedAsset = release.data.assets.find(
+        (a) => a.name === compressedBinaryName
+      );
+      if (!compressedAsset) {
+        throw new Error(
+          `Could not find asset ${compressedBinaryName} in release ${release.data.tag_name}`
+        )
+      }
+
+      // Download the compressed binary
+      coreExports.info(
+        `Downloading ${compressedBinaryName} from release ${release.data.tag_name}...`
+      );
+      const compressedBinaryPath = await toolCacheExports.downloadTool(
+        compressedAsset.browser_download_url
+      );
+      coreExports.info(`Downloaded ${compressedBinaryName} to ${compressedBinaryPath}`);
+
+      // Unzip the compressed binary
+      coreExports.info(`Unzipping ${compressedBinaryName}...`);
+      const binaryDir = await toolCacheExports.extractTar(
+        compressedBinaryPath,
+        `octometrics_${platformName}_${archName}`
+      );
+      releaseBinaryPath = require$$1.join(binaryDir, 'octometrics');
+      coreExports.info(`Unzipped ${compressedBinaryName} to ${releaseBinaryPath}`);
+      coreExports.info(
+        `Successfully installed octometrics ${release.data.tag_name} for ${platformName}/${archName} at ${releaseBinaryPath}`
+      );
+      coreExports.setOutput('version', release.data.tag_name);
     }
-
-    // Download the compressed binary
-    coreExports.info(
-      `Downloading ${compressedBinaryName} from release ${release.data.tag_name}...`
-    );
-    const compressedBinaryPath = await toolCacheExports.downloadTool(
-      compressedAsset.browser_download_url
-    );
-    coreExports.info(`Downloaded ${compressedBinaryName} to ${compressedBinaryPath}`);
-
-    // Unzip the compressed binary
-    coreExports.info(`Unzipping ${compressedBinaryName}...`);
-    const binaryDir = await toolCacheExports.extractTar(
-      compressedBinaryPath,
-      `octometrics_${platformName}_${archName}`
-    );
-    const binaryPath = require$$1.join(binaryDir, 'octometrics');
-    coreExports.info(`Unzipped ${compressedBinaryName} to ${binaryPath}`);
 
     // Make it executable (except on Windows)
     if (platform !== 'win32') {
-      require$$0$1.chmodSync(binaryPath, '755');
+      require$$0$1.chmodSync(releaseBinaryPath, '755');
     }
 
     // Add to PATH
-    const toolPath = require$$1.dirname(binaryPath);
+    const toolPath = require$$1.dirname(releaseBinaryPath);
     coreExports.addPath(toolPath);
 
-    coreExports.info(
-      `Successfully installed octometrics ${release.data.tag_name} for ${platformName}/${archName} at ${binaryPath}`
-    );
-    coreExports.setOutput('version', release.data.tag_name);
-    coreExports.setOutput('path', binaryPath);
-
+    coreExports.setOutput('path', releaseBinaryPath);
     coreExports.info('Running octometrics monitor...');
+    coreExports.info(`Running command: ${releaseBinaryPath} monitor -o ${monitorPath}`);
     // Run the octometrics binary with proper command separation
-    const child = spawn(binaryPath, ['monitor', '-o', monitorPath], {
+    const child = spawn(releaseBinaryPath, ['monitor', '-o', monitorPath], {
       detached: true,
       stdio: 'ignore',
       env: {
