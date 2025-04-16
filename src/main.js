@@ -114,6 +114,7 @@ export async function run() {
 
     core.setOutput('path', releaseBinaryPath)
     core.info('Running octometrics monitor...')
+    core.info(releaseBinaryPath, 'monitor', '-o', monitorPath)
     // Run the octometrics binary with proper command separation
     const child = spawn(releaseBinaryPath, ['monitor', '-o', monitorPath], {
       detached: true,
