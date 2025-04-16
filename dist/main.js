@@ -6184,6 +6184,9 @@ function requireToolCache () {
 
 var toolCacheExports = requireToolCache();
 
+const artifactName = `${process.env.GITHUB_JOB}-octometrics.monitor.json`;
+var monitorPath = '/tmp/' + artifactName;
+
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -6278,17 +6281,13 @@ async function run() {
 
     coreExports.info('Running octometrics monitor...');
     // Run the octometrics binary with proper command separation
-    const child = spawn(
-      binaryPath,
-      ['monitor', '-o', 'octometrics.monitor.json'],
-      {
-        detached: true,
-        stdio: 'ignore',
-        env: {
-          ...process.env
-        }
+    const child = spawn(binaryPath, ['monitor', '-o', monitorPath], {
+      detached: true,
+      stdio: 'ignore',
+      env: {
+        ...process.env
       }
-    );
+    });
 
     child.unref();
 

@@ -170367,8 +170367,7 @@ async function run() {
     const artifactClient = new artifactExports.DefaultArtifactClient();
 
     // Upload the monitor file
-    const artifactName = 'octometrics.monitor.json';
-    const files = ['octometrics.monitor.json'];
+    const files = [monitorPath];
     const rootDirectory = process.cwd();
     const options = {
       continueOnError: true
