@@ -6,7 +6,7 @@ import * as path from 'path'
 import * as fs from 'fs'
 import { spawn } from 'child_process'
 
-const artifactName = `${process.env.GITHUB_JOB}-octometrics.monitor.json`
+const artifactName = `${process.env.GITHUB_JOB}-octometrics.monitor.log`
 const monitorPath = '/tmp/' + artifactName
 
 /**

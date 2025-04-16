@@ -170344,7 +170344,7 @@ var artifactExports = requireArtifact();
  * This runs after the main action completes, regardless of success or failure.
  */
 
-const artifactName = `${process.env.GITHUB_JOB}-octometrics.monitor.json`;
+const artifactName = `${process.env.GITHUB_JOB}-octometrics.monitor.log`;
 const monitorPath = '/tmp/' + artifactName;
 
 /**

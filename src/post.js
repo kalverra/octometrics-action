@@ -5,7 +5,7 @@
 import * as core from '@actions/core'
 import { DefaultArtifactClient } from '@actions/artifact'
 
-const artifactName = `${process.env.GITHUB_JOB}-octometrics.monitor.json`
+const artifactName = `${process.env.GITHUB_JOB}-octometrics.monitor.log`
 const monitorPath = '/tmp/' + artifactName
 
 /**

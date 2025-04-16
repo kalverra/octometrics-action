@@ -1,5 +1,7 @@
 name: 'Octometrics Action'
-description: 'Use octometrics to monitor detailed profiling information about your GitHub Actions workflows'
+description:
+  'Use octometrics to monitor detailed profiling information about your GitHub
+  Actions workflows'
 author: 'Adam Hamrick'
 
 inputs:
