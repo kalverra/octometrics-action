@@ -32,7 +32,7 @@ export async function run() {
 
     // Upload the monitor file
     const files = [monitorPath]
-    const rootDirectory = process.cwd()
+    const rootDirectory = '/tmp'
     const options = {
       continueOnError: true
     }
