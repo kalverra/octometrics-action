@@ -6240,16 +6240,18 @@ async function run() {
 
       // Get the latest release if no version is specified
       const octokit = githubExports.getOctokit(process.env.GITHUB_TOKEN);
-      const release = version
-        ? await octokit.rest.repos.getReleaseByTag({
-            owner: 'kalverra',
-            repo: 'octometrics',
-            tag: version
-          })
-        : await octokit.rest.repos.getLatestRelease({
-            owner: 'kalverra',
-            repo: 'octometrics'
-          });
+      coreExports.info(`Getting release for version ${version}`);
+      const release =
+        version === 'latest'
+          ? await octokit.rest.repos.getLatestRelease({
+              owner: 'kalverra',
+              repo: 'octometrics'
+            })
+          : await octokit.rest.repos.getReleaseByTag({
+              owner: 'kalverra',
+              repo: 'octometrics',
+              tag: version
+            });
 
       // Find the matching compressed asset
       const compressedAsset = release.data.assets.find(
