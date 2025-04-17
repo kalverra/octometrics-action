@@ -1,4 +1,4 @@
-import { r as requireLib, a as requireUndici, g as getUserAgent, o as once, D as Deprecation, b as beforeAfterHookExports, c as getAugmentedNamespace, d as requireCore, e as requireIo, f as requireExec, h as commonjsGlobal, i as coreExports } from './once-DunWvxhB.js';
+import { r as requireLib, a as requireUndici, g as getUserAgent, o as once, D as Deprecation, b as beforeAfterHookExports, c as getAugmentedNamespace, d as requireCore, e as requireIo, f as requireExec, h as commonjsGlobal, i as coreExports, j as o } from './jwt-decode.esm-B95W8UTo.js';
 import * as require$$0$1 from 'fs';
 import require$$0__default from 'fs';
 import * as require$$0 from 'os';
@@ -6244,7 +6244,41 @@ async function run() {
 
       coreExports.info(`DEBUG: Getting token name`);
       const token = getRuntimeToken();
-      coreExports.info(`DEBUG: Token name: ${token}`);
+
+      const decoded = o(token);
+      coreExports.info(`DEBUG: Decoded token: ${JSON.stringify(decoded)}`);
+      if (!decoded.scp) {
+        throw new Error('Invalid JWT token')
+      }
+      const scpParts = decoded.scp.split(' ');
+      if (scpParts.length === 0) {
+        throw new Error('Invalid JWT token')
+      }
+
+      for (const scopes of scpParts) {
+        const scopeParts = scopes.split(':');
+        if (scopeParts?.[0] !== 'Actions.Results') {
+          // not the Actions.Results scope
+          continue
+        }
+
+        /*
+         * example scopeParts:
+         * ["Actions.Results", "ce7f54c7-61c7-4aae-887f-30da475f5f1a", "ca395085-040a-526b-2ce8-bdc85f692774"]
+         */
+        if (scopeParts.length !== 3) {
+          // missing expected number of claims
+          throw new Error('Invalid JWT token: expected 3 claims')
+        }
+
+        const ids = {
+          workflowRunBackendId: scopeParts[1],
+          workflowJobRunBackendId: scopeParts[2]
+        };
+
+        coreExports.info(`Workflow Run Backend ID: ${ids.workflowRunBackendId}`);
+        coreExports.info(`Workflow Job Run Backend ID: ${ids.workflowJobRunBackendId}`);
+      }
 
       // Construct the asset name
       const compressedBinaryName = `octometrics_${platformName}_${archName}${platform === 'win32' ? '.zip' : '.tar.gz'}`;

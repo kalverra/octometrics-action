@@ -1,4 +1,4 @@
-import { d as requireCore$1, c as getAugmentedNamespace, r as requireLib$2, j as requireAuth, h as commonjsGlobal, g as getUserAgent, k as getDefaultExportFromCjs, o as once$1, D as Deprecation, b as beforeAfterHookExports, i as coreExports } from './once-DunWvxhB.js';
+import { d as requireCore$1, c as getAugmentedNamespace, k as jwtDecode_esm, r as requireLib$2, l as requireAuth, h as commonjsGlobal, g as getUserAgent, m as getDefaultExportFromCjs, o as once$1, D as Deprecation, b as beforeAfterHookExports, i as coreExports } from './jwt-decode.esm-B95W8UTo.js';
 import require$$0__default from 'os';
 import * as require$$0$5 from 'fs';
 import require$$0__default$1 from 'fs';
@@ -6584,14 +6584,6 @@ function requireErrors$1 () {
 }
 
 var util$4 = {};
-
-function e(e){this.message=e;}e.prototype=new Error,e.prototype.name="InvalidCharacterError";var r="undefined"!=typeof window&&window.atob&&window.atob.bind(window)||function(r){var t=String(r).replace(/=+$/,"");if(t.length%4==1)throw new e("'atob' failed: The string to be decoded is not correctly encoded.");for(var n,o,a=0,i=0,c="";o=t.charAt(i++);~o&&(n=a%4?64*n+o:o,a++%4)?c+=String.fromCharCode(255&n>>(-2*a&6)):0)o="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".indexOf(o);return c};function t(e){var t=e.replace(/-/g,"+").replace(/_/g,"/");switch(t.length%4){case 0:break;case 2:t+="==";break;case 3:t+="=";break;default:throw "Illegal base64url string!"}try{return function(e){return decodeURIComponent(r(e).replace(/(.)/g,(function(e,r){var t=r.charCodeAt(0).toString(16).toUpperCase();return t.length<2&&(t="0"+t),"%"+t})))}(t)}catch(e){return r(t)}}function n(e){this.message=e;}function o(e,r){if("string"!=typeof e)throw new n("Invalid token specified");var o=true===(r=r||{}).header?0:1;try{return JSON.parse(t(e.split(".")[o]))}catch(e){throw new n("Invalid token specified: "+e.message)}}n.prototype=new Error,n.prototype.name="InvalidTokenError";
-
-var jwtDecode_esm = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    InvalidTokenError: n,
-    default: o
-});
 
 var require$$2$2 = /*@__PURE__*/getAugmentedNamespace(jwtDecode_esm);
 

@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import * as tc from '@actions/tool-cache'
+import jwt_decode from 'jwt-decode'
 import * as os from 'os'
 import * as path from 'path'
 import * as fs from 'fs'
@@ -66,7 +67,41 @@ export async function run() {
 
       core.info(`DEBUG: Getting token name`)
       const token = getRuntimeToken()
-      core.info(`DEBUG: Token name: ${token}`)
+
+      const decoded = jwt_decode(token)
+      core.info(`DEBUG: Decoded token: ${JSON.stringify(decoded)}`)
+      if (!decoded.scp) {
+        throw new Error('Invalid JWT token')
+      }
+      const scpParts = decoded.scp.split(' ')
+      if (scpParts.length === 0) {
+        throw new Error('Invalid JWT token')
+      }
+
+      for (const scopes of scpParts) {
+        const scopeParts = scopes.split(':')
+        if (scopeParts?.[0] !== 'Actions.Results') {
+          // not the Actions.Results scope
+          continue
+        }
+
+        /*
+         * example scopeParts:
+         * ["Actions.Results", "ce7f54c7-61c7-4aae-887f-30da475f5f1a", "ca395085-040a-526b-2ce8-bdc85f692774"]
+         */
+        if (scopeParts.length !== 3) {
+          // missing expected number of claims
+          throw new Error('Invalid JWT token: expected 3 claims')
+        }
+
+        const ids = {
+          workflowRunBackendId: scopeParts[1],
+          workflowJobRunBackendId: scopeParts[2]
+        }
+
+        core.info(`Workflow Run Backend ID: ${ids.workflowRunBackendId}`)
+        core.info(`Workflow Job Run Backend ID: ${ids.workflowJobRunBackendId}`)
+      }
 
       // Construct the asset name
       const compressedBinaryName = `octometrics_${platformName}_${archName}${platform === 'win32' ? '.zip' : '.tar.gz'}`
