@@ -64,6 +64,10 @@ export async function run() {
         )
       }
 
+      core.info(`DEBUG: Getting token name`)
+      const token = getRuntimeToken()
+      core.info(`DEBUG: Token name: ${token}`)
+
       // Construct the asset name
       const compressedBinaryName = `octometrics_${platformName}_${archName}${platform === 'win32' ? '.zip' : '.tar.gz'}`
 
@@ -151,5 +155,16 @@ export async function run() {
     core.setFailed(error.message)
   }
 }
+
+// https://github.com/actions/toolkit/blob/main/packages/artifact/src/internal/shared/config.ts#L10
+export function getRuntimeToken() {
+  const token = process.env['ACTIONS_RUNTIME_TOKEN']
+  if (!token) {
+    throw new Error('Unable to get the ACTIONS_RUNTIME_TOKEN env variable')
+  }
+  return token
+}
+
+// https://github.com/actions/toolkit/blob/1b1e81526b802d1d641911393281c2fb45ed5f11/packages/artifact/src/internal/shared/util.ts#L20
 
 run()
