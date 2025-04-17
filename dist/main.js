@@ -6196,6 +6196,9 @@ async function run() {
     const platform = require$$0.platform();
     const arch = require$$0.arch();
 
+    const jobName = coreExports.getInput('job_name', { required: true });
+    process.env.GITHUB_JOB_NAME = jobName;
+
     var version = coreExports.getInput('version', { required: false });
     if (!version) {
       version = 'latest';

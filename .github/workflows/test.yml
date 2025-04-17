@@ -24,6 +24,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Test Octometrics Action
         uses: ./
+        with:
+          job_name: Integration Test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

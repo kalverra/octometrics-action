@@ -5,6 +5,11 @@ description:
 author: 'Adam Hamrick'
 
 inputs:
+  job_name:
+    description:
+      'The name of the job to monitor. Required to properly match job run ids as
+      GitHub Actions does not provide the job run ID anywhere in the runner.'
+    required: true
   version:
     description:
       'Version of octometrics to install (e.g. v1.0.0). If not specified, latest
@@ -13,7 +18,7 @@ inputs:
     required: false
   interval:
     description:
-      'Go duration string for how often to poll for profiling information'
+      'Go duration string for how often to poll for profiling information.'
     default: '1s'
     required: false
 
