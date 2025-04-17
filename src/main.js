@@ -18,6 +18,10 @@ export async function run() {
     const platform = os.platform()
     const arch = os.arch()
 
+    core.info(
+      `DEBUG: All environment variables: ${JSON.stringify(process.env)}`
+    )
+
     var version = core.getInput('version', { required: false })
     if (!version) {
       version = 'latest'

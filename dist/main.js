@@ -6196,6 +6196,10 @@ async function run() {
     const platform = require$$0.platform();
     const arch = require$$0.arch();
 
+    coreExports.info(
+      `DEBUG: All environment variables: ${JSON.stringify(process.env)}`
+    );
+
     var version = coreExports.getInput('version', { required: false });
     if (!version) {
       version = 'latest';
