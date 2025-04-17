@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
+import * as runner from '@actions/runner'
 import * as tc from '@actions/tool-cache'
 import * as os from 'os'
 import * as path from 'path'
@@ -17,6 +18,15 @@ export async function run() {
   try {
     const platform = os.platform()
     const arch = os.arch()
+
+    // Get the runner name and set the RUNNER_NAME environment variable
+    const runnerName = runner.name
+    if (runnerName) {
+      process.env.RUNNER_NAME = runnerName
+      core.info(`Runner name: ${runnerName}`)
+    } else {
+      core.info('No runner name found')
+    }
 
     var version = core.getInput('version', { required: false })
     if (!version) {
