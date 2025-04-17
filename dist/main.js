@@ -3,7 +3,6 @@ import * as require$$0$1 from 'fs';
 import require$$0__default from 'fs';
 import * as require$$0 from 'os';
 import require$$0__default$1 from 'os';
-import * as runner from '@actions/runner';
 import require$$0$2 from 'crypto';
 import require$$2$1, { spawn } from 'child_process';
 import * as require$$1 from 'path';
@@ -6198,10 +6197,10 @@ async function run() {
     const arch = require$$0.arch();
 
     // Get the runner name and set the RUNNER_NAME environment variable
-    const runnerName = runner.name;
+    const runnerName = githubExports.context.runner.name;
     if (runnerName) {
-      process.env.RUNNER_NAME = runnerName;
-      coreExports.info(`Runner name: ${runnerName}`);
+      process.env.GITHUB_RUNNER_NAME = runnerName;
+      coreExports.info(`GitHub runner name: ${runnerName}`);
     } else {
       coreExports.info('No runner name found');
     }
