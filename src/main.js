@@ -18,9 +18,8 @@ export async function run() {
     const platform = os.platform()
     const arch = os.arch()
 
-    core.info(
-      `DEBUG: All environment variables: ${JSON.stringify(process.env)}`
-    )
+    const jobName = core.getInput('job_name', { required: true })
+    process.env.GITHUB_JOB_NAME = jobName
 
     var version = core.getInput('version', { required: false })
     if (!version) {
