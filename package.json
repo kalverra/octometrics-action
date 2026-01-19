@@ -59,7 +59,7 @@
     "@actions/artifact": "^2.3.2",
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.0",
-    "@actions/tool-cache": "^2.0.1"
+    "@actions/tool-cache": "^3.0.0"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.9",
