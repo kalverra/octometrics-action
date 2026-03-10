@@ -6325,7 +6325,7 @@ async function run() {
 
     child.unref();
 
-    coreExports.saveState('octometrics_binary_path', releaseBinaryPath);
+    coreExports.saveState('octometrics_binary_path', require$$1.resolve(releaseBinaryPath));
     coreExports.saveState('octometrics_monitor_pid', child.pid?.toString());
     coreExports.info('Octometrics monitor started');
   } catch (error) {
