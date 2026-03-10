@@ -147,7 +147,9 @@ export async function run() {
 
     child.unref()
 
-    core.saveState('octometrics_binary_path', path.resolve(releaseBinaryPath))
+    const stableBinaryPath = '/tmp/octometrics'
+    fs.copyFileSync(path.resolve(releaseBinaryPath), stableBinaryPath)
+    core.saveState('octometrics_binary_path', stableBinaryPath)
     core.saveState('octometrics_monitor_pid', child.pid?.toString())
     core.info('Octometrics monitor started')
   } catch (error) {

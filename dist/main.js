@@ -6325,7 +6325,9 @@ async function run() {
 
     child.unref();
 
-    coreExports.saveState('octometrics_binary_path', require$$1.resolve(releaseBinaryPath));
+    const stableBinaryPath = '/tmp/octometrics';
+    require$$0$1.copyFileSync(require$$1.resolve(releaseBinaryPath), stableBinaryPath);
+    coreExports.saveState('octometrics_binary_path', stableBinaryPath);
     coreExports.saveState('octometrics_monitor_pid', child.pid?.toString());
     coreExports.info('Octometrics monitor started');
   } catch (error) {
