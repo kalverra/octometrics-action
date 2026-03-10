@@ -27,16 +27,23 @@ export async function run() {
     }
 
     // Generate the step summary and PR comment from monitor data
-    try {
-      core.info('Generating octometrics report...')
-      execSync(`octometrics report -f ${monitorPath}`, {
-        env: { ...process.env },
-        stdio: 'inherit',
-        timeout: 60000
-      })
-      core.info('Octometrics report generated successfully')
-    } catch (error) {
-      core.warning(`Failed to generate octometrics report: ${error.message}`)
+    const binaryPath = core.getState('octometrics_binary_path')
+    if (!binaryPath) {
+      core.warning(
+        'Octometrics binary path not found in state. Skipping report generation.'
+      )
+    } else {
+      try {
+        core.info('Generating octometrics report...')
+        execSync(`${binaryPath} report -f ${monitorPath}`, {
+          env: { ...process.env },
+          stdio: 'inherit',
+          timeout: 60000
+        })
+        core.info('Octometrics report generated successfully')
+      } catch (error) {
+        core.warning(`Failed to generate octometrics report: ${error.message}`)
+      }
     }
 
     core.info('Uploading octometrics monitor data...')

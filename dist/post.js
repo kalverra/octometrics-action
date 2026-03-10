@@ -170365,16 +170365,23 @@ async function run() {
     }
 
     // Generate the step summary and PR comment from monitor data
-    try {
-      coreExports.info('Generating octometrics report...');
-      execSync(`octometrics report -f ${monitorPath}`, {
-        env: { ...process.env },
-        stdio: 'inherit',
-        timeout: 60000
-      });
-      coreExports.info('Octometrics report generated successfully');
-    } catch (error) {
-      coreExports.warning(`Failed to generate octometrics report: ${error.message}`);
+    const binaryPath = coreExports.getState('octometrics_binary_path');
+    if (!binaryPath) {
+      coreExports.warning(
+        'Octometrics binary path not found in state. Skipping report generation.'
+      );
+    } else {
+      try {
+        coreExports.info('Generating octometrics report...');
+        execSync(`${binaryPath} report -f ${monitorPath}`, {
+          env: { ...process.env },
+          stdio: 'inherit',
+          timeout: 60000
+        });
+        coreExports.info('Octometrics report generated successfully');
+      } catch (error) {
+        coreExports.warning(`Failed to generate octometrics report: ${error.message}`);
+      }
     }
 
     coreExports.info('Uploading octometrics monitor data...');
