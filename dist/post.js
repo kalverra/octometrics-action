@@ -1,4 +1,5 @@
 import { d as requireCore$1, c as getAugmentedNamespace, r as requireLib$2, j as requireAuth, h as commonjsGlobal, g as getUserAgent, k as getDefaultExportFromCjs, o as once$1, D as Deprecation, b as beforeAfterHookExports, i as coreExports } from './once-DunWvxhB.js';
+import { execSync } from 'child_process';
 import require$$0__default from 'os';
 import * as require$$0$5 from 'fs';
 import require$$0__default$1 from 'fs';
@@ -43,7 +44,6 @@ import 'async_hooks';
 import 'console';
 import 'string_decoder';
 import 'diagnostics_channel';
-import 'child_process';
 import 'timers';
 
 var artifact$1 = {};
@@ -170362,6 +170362,19 @@ async function run() {
         'Not running in GitHub Actions environment or missing required tokens. Skipping artifact upload.'
       );
       return
+    }
+
+    // Generate the step summary and PR comment from monitor data
+    try {
+      coreExports.info('Generating octometrics report...');
+      execSync(`octometrics report -f ${monitorPath}`, {
+        env: { ...process.env },
+        stdio: 'inherit',
+        timeout: 60000
+      });
+      coreExports.info('Octometrics report generated successfully');
+    } catch (error) {
+      coreExports.warning(`Failed to generate octometrics report: ${error.message}`);
     }
 
     coreExports.info('Uploading octometrics monitor data...');

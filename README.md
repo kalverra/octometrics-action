@@ -19,7 +19,7 @@ example-job:
       uses: kalverra/octometrics-action
       with:
         job_name: Example Job # Required input to match API job data with runner job data
-        version: 'latest'     # Optional input to dictate which version of octometrics to use
+        version: 'latest' # Optional input to dictate which version of octometrics to use
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Optional, but highly recommended to prevent rate limiting
     - name: Checkout code
@@ -33,8 +33,9 @@ example-job:
 
 ### `job_name`
 
-**Required** The name of the job that is being monitored. This is necessary to properly match job runner data with API data.
-There is [currently no native way for GitHub Actions to do this for us](https://github.com/actions/toolkit/issues/550).
+**Required** The name of the job that is being monitored. This is necessary to
+properly match job runner data with API data. There is
+[currently no native way for GitHub Actions to do this for us](https://github.com/actions/toolkit/issues/550).
 
 ##### No-name example
 
@@ -67,7 +68,7 @@ example-job:
 example-job:
   strategy:
     matrix:
-      value: ["other", "matrix", "names"]
+      value: ['other', 'matrix', 'names']
   runs-on: ubuntu-latest
   name: Example Job Name ${{ matrix.value }}
   steps:

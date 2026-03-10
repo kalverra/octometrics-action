@@ -3,6 +3,7 @@
  * This runs after the main action completes, regardless of success or failure.
  */
 import * as core from '@actions/core'
+import { execSync } from 'child_process'
 import { DefaultArtifactClient } from '@actions/artifact'
 
 const artifactName = `${process.env.GITHUB_JOB}-octometrics.monitor.log`
@@ -23,6 +24,19 @@ export async function run() {
         'Not running in GitHub Actions environment or missing required tokens. Skipping artifact upload.'
       )
       return
+    }
+
+    // Generate the step summary and PR comment from monitor data
+    try {
+      core.info('Generating octometrics report...')
+      execSync(`octometrics report -f ${monitorPath}`, {
+        env: { ...process.env },
+        stdio: 'inherit',
+        timeout: 60000
+      })
+      core.info('Octometrics report generated successfully')
+    } catch (error) {
+      core.warning(`Failed to generate octometrics report: ${error.message}`)
     }
 
     core.info('Uploading octometrics monitor data...')
