@@ -6184,7 +6184,7 @@ function requireToolCache () {
 
 var toolCacheExports = requireToolCache();
 
-const artifactName = `${process.env.GITHUB_JOB}-octometrics.monitor.log`;
+const artifactName = `${process.env.GITHUB_JOB}-octometrics.monitor.log.jsonl`;
 const monitorPath = '/tmp/' + artifactName;
 
 /**

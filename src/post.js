@@ -6,7 +6,7 @@ import * as core from '@actions/core'
 import { execSync } from 'child_process'
 import { DefaultArtifactClient } from '@actions/artifact'
 
-const artifactName = `${process.env.GITHUB_JOB}-octometrics.monitor.log`
+const artifactName = `${process.env.GITHUB_JOB}-octometrics.monitor.log.jsonl`
 const monitorPath = '/tmp/' + artifactName
 
 /**
