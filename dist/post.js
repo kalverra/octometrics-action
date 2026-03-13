@@ -172400,10 +172400,10 @@ async function run() {
       );
     } else {
       try {
-        const postComment = coreExports.getState('octometrics_post_comment');
+        const skipComment = coreExports.getState('octometrics_skip_comment');
         coreExports.info('Generating octometrics report...');
         execSync(
-          `${binaryPath} report -f ${monitorPath} ${postComment ? '' : '--skip-comment'}`,
+          `${binaryPath} report -f ${monitorPath} ${skipComment ? '--skip-comment' : ''}`,
           {
             env: { ...process.env },
             stdio: 'inherit',

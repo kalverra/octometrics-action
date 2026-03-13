@@ -20,7 +20,7 @@ example-job:
       with:
         job_name: Example Job # Required input to match API job data with runner job data
         version: 'latest' # Optional input to dictate which version of octometrics to use
-        skip_comment: "false" # Optional input that can skip posting comments to a PR, default false
+        skip_comment: 'false' # Optional input that can skip posting comments to a PR, default false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Optional, but highly recommended to prevent rate limiting
     - name: Checkout code

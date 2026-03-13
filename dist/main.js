@@ -6259,11 +6259,11 @@ async function run() {
     const jobName = coreExports.getInput('job_name', { required: true });
     process.env.GITHUB_JOB_NAME = jobName;
 
-    const postComment = coreExports.getInput('post_comment', { required: false });
-    if (!postComment) {
-      postComment = false;
+    let skipComment = coreExports.getInput('skip_comment', { required: false });
+    if (skipComment != 'true') {
+      skipComment = false;
     }
-    coreExports.saveState('octometrics_post_comment', postComment);
+    coreExports.saveState('octometrics_skip_comment', skipComment);
 
     var version = coreExports.getInput('version', { required: false });
     if (!version) {

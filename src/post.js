@@ -34,10 +34,10 @@ export async function run() {
       )
     } else {
       try {
-        const postComment = core.getState('octometrics_post_comment')
+        const skipComment = core.getState('octometrics_skip_comment')
         core.info('Generating octometrics report...')
         execSync(
-          `${binaryPath} report -f ${monitorPath} ${postComment ? '' : '--skip-comment'}`,
+          `${binaryPath} report -f ${monitorPath} ${skipComment ? '--skip-comment' : ''}`,
           {
             env: { ...process.env },
             stdio: 'inherit',
