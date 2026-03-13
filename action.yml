@@ -1,43 +1,41 @@
-name: 'Octometrics Action'
+name: "Octometrics Action"
 description:
-  'Use octometrics to monitor detailed profiling information about your GitHub
-  Actions workflows'
-author: 'Adam Hamrick'
+  "Use octometrics to monitor detailed profiling information about your GitHub
+  Actions workflows"
+author: "Adam Hamrick"
 
 inputs:
   job_name:
     description:
-      'The name of the job to monitor. Required to properly match job run ids as
-      GitHub Actions does not provide the job run ID anywhere in the runner.'
+      "The name of the job to monitor. Required to properly match job run ids as
+      GitHub Actions does not provide the job run ID anywhere in the runner."
     required: true
-  post_comment:
-    description:
-      'Whether to post a comment to a pull request with the octometrics report.'
-    default: 'false'
+  skip_comment:
+    description: "Whether to skip posting a comment to a pull request with the octometrics report."
+    default: "false"
     required: false
   version:
     description:
-      'Version of octometrics to install (e.g. v1.0.0). If not specified, latest
-      release will be used.'
-    default: 'latest'
+      "Version of octometrics to install (e.g. v1.0.0). If not specified, latest
+      release will be used."
+    default: "latest"
     required: false
   interval:
-    description:
-      'Go duration string for how often to poll for profiling information.'
-    default: '1s'
+    description: "Go duration string for how often to poll for profiling information."
+    default: "1s"
     required: false
 
 outputs:
   version:
-    description: 'The version of octometrics that was installed'
+    description: "The version of octometrics that was installed"
   path:
-    description: 'The path to the installed octometrics binary'
+    description: "The path to the installed octometrics binary"
 
 runs:
-  using: 'node24'
-  main: 'dist/main.js'
-  post: 'dist/post.js'
+  using: "node24"
+  main: "dist/main.js"
+  post: "dist/post.js"
 
 branding:
-  icon: 'download'
-  color: 'blue'
+  icon: "download"
+  color: "blue"
