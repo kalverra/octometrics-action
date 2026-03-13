@@ -21,6 +21,12 @@ export async function run() {
     const jobName = core.getInput('job_name', { required: true })
     process.env.GITHUB_JOB_NAME = jobName
 
+    let skipComment = core.getInput('skip_comment', { required: false })
+    if (skipComment != 'true') {
+      skipComment = false
+    }
+    core.saveState('octometrics_skip_comment', skipComment)
+
     var version = core.getInput('version', { required: false })
     if (!version) {
       version = 'latest'
