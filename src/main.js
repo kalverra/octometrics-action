@@ -21,6 +21,11 @@ export async function run() {
     const jobName = core.getInput('job_name', { required: true })
     process.env.GITHUB_JOB_NAME = jobName
 
+    const postComment = core.getInput('post_comment', { required: false })
+    if (!postComment) {
+      postComment = false
+    }
+
     var version = core.getInput('version', { required: false })
     if (!version) {
       version = 'latest'

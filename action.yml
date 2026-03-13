@@ -10,6 +10,11 @@ inputs:
       'The name of the job to monitor. Required to properly match job run ids as
       GitHub Actions does not provide the job run ID anywhere in the runner.'
     required: true
+  post_comment:
+    description:
+      'Whether to post a comment to a pull request with the octometrics report.'
+    default: 'false'
+    required: false
   version:
     description:
       'Version of octometrics to install (e.g. v1.0.0). If not specified, latest
@@ -29,7 +34,7 @@ outputs:
     description: 'The path to the installed octometrics binary'
 
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/main.js'
   post: 'dist/post.js'
 

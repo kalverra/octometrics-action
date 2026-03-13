@@ -34,8 +34,12 @@ export async function run() {
       )
     } else {
       try {
+        let skipComment = ''
+        if (postComment) {
+          skipComment = '--skip-comment'
+        }
         core.info('Generating octometrics report...')
-        execSync(`${binaryPath} report -f ${monitorPath}`, {
+        execSync(`${binaryPath} report -f ${monitorPath} ${skipComment}`, {
           env: { ...process.env },
           stdio: 'inherit',
           timeout: 60000
