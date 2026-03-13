@@ -25,6 +25,7 @@ export async function run() {
     if (!postComment) {
       postComment = false
     }
+    core.saveState('octometrics_post_comment', postComment)
 
     var version = core.getInput('version', { required: false })
     if (!version) {

@@ -6263,6 +6263,7 @@ async function run() {
     if (!postComment) {
       postComment = false;
     }
+    coreExports.saveState('octometrics_post_comment', postComment);
 
     var version = coreExports.getInput('version', { required: false });
     if (!version) {

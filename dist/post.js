@@ -172400,16 +172400,16 @@ async function run() {
       );
     } else {
       try {
-        let skipComment = '';
-        if (postComment) {
-          skipComment = '--skip-comment';
-        }
+        const postComment = coreExports.getState('octometrics_post_comment');
         coreExports.info('Generating octometrics report...');
-        execSync(`${binaryPath} report -f ${monitorPath} ${skipComment}`, {
-          env: { ...process.env },
-          stdio: 'inherit',
-          timeout: 60000
-        });
+        execSync(
+          `${binaryPath} report -f ${monitorPath} ${postComment ? '' : '--skip-comment'}`,
+          {
+            env: { ...process.env },
+            stdio: 'inherit',
+            timeout: 60000
+          }
+        );
         coreExports.info('Octometrics report generated successfully');
       } catch (error) {
         coreExports.warning(`Failed to generate octometrics report: ${error.message}`);
