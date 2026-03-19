@@ -1,4 +1,4 @@
-import { r as requireLib, a as requireUndici, g as getUserAgent, o as once, D as Deprecation, b as beforeAfterHookExports, c as getAugmentedNamespace, d as requireCore, e as requireIo, f as requireExec, h as commonjsGlobal, i as coreExports } from './once-DunWvxhB.js';
+import { r as requireLib, a as requireUndici, g as getUserAgent, D as Deprecation, o as once, b as beforeAfterHookExports, c as getAugmentedNamespace, d as requireCore, e as requireIo, f as requireExec, h as commonjsGlobal, i as coreExports } from './once-CLj6ax7h.js';
 import * as require$$0$1 from 'fs';
 import require$$0__default from 'fs';
 import * as require$$0 from 'os';
@@ -68,6 +68,7 @@ function requireContext () {
 	        this.action = process.env.GITHUB_ACTION;
 	        this.actor = process.env.GITHUB_ACTOR;
 	        this.job = process.env.GITHUB_JOB;
+	        this.runAttempt = parseInt(process.env.GITHUB_RUN_ATTEMPT, 10);
 	        this.runNumber = parseInt(process.env.GITHUB_RUN_NUMBER, 10);
 	        this.runId = parseInt(process.env.GITHUB_RUN_ID, 10);
 	        this.apiUrl = (_a = process.env.GITHUB_API_URL) !== null && _a !== void 0 ? _a : `https://api.github.com`;
@@ -1044,7 +1045,7 @@ var distWeb$1 = /*#__PURE__*/Object.freeze({
 
 var require$$2 = /*@__PURE__*/getAugmentedNamespace(distWeb$1);
 
-const VERSION$1 = "10.1.5";
+const VERSION$1 = "10.4.1";
 
 const Endpoints = {
   actions: {
@@ -1170,6 +1171,9 @@ const Endpoints = {
       "GET /repos/{owner}/{repo}/actions/permissions/selected-actions"
     ],
     getArtifact: ["GET /repos/{owner}/{repo}/actions/artifacts/{artifact_id}"],
+    getCustomOidcSubClaimForRepo: [
+      "GET /repos/{owner}/{repo}/actions/oidc/customization/sub"
+    ],
     getEnvironmentPublicKey: [
       "GET /repositories/{repository_id}/environments/{environment_name}/secrets/public-key"
     ],
@@ -1322,6 +1326,9 @@ const Endpoints = {
     setCustomLabelsForSelfHostedRunnerForRepo: [
       "PUT /repos/{owner}/{repo}/actions/runners/{runner_id}/labels"
     ],
+    setCustomOidcSubClaimForRepo: [
+      "PUT /repos/{owner}/{repo}/actions/oidc/customization/sub"
+    ],
     setGithubActionsDefaultWorkflowPermissionsOrganization: [
       "PUT /orgs/{org}/actions/permissions/workflow"
     ],
@@ -1391,6 +1398,7 @@ const Endpoints = {
     listWatchersForRepo: ["GET /repos/{owner}/{repo}/subscribers"],
     markNotificationsAsRead: ["PUT /notifications"],
     markRepoNotificationsAsRead: ["PUT /repos/{owner}/{repo}/notifications"],
+    markThreadAsDone: ["DELETE /notifications/threads/{thread_id}"],
     markThreadAsRead: ["PATCH /notifications/threads/{thread_id}"],
     setRepoSubscription: ["PUT /repos/{owner}/{repo}/subscription"],
     setThreadSubscription: [
@@ -1667,10 +1675,10 @@ const Endpoints = {
     updateForAuthenticatedUser: ["PATCH /user/codespaces/{codespace_name}"]
   },
   copilot: {
-    addCopilotForBusinessSeatsForTeams: [
+    addCopilotSeatsForTeams: [
       "POST /orgs/{org}/copilot/billing/selected_teams"
     ],
-    addCopilotForBusinessSeatsForUsers: [
+    addCopilotSeatsForUsers: [
       "POST /orgs/{org}/copilot/billing/selected_users"
     ],
     cancelCopilotSeatAssignmentForTeams: [
@@ -1983,9 +1991,23 @@ const Endpoints = {
       }
     ]
   },
+  oidc: {
+    getOidcCustomSubTemplateForOrg: [
+      "GET /orgs/{org}/actions/oidc/customization/sub"
+    ],
+    updateOidcCustomSubTemplateForOrg: [
+      "PUT /orgs/{org}/actions/oidc/customization/sub"
+    ]
+  },
   orgs: {
     addSecurityManagerTeam: [
       "PUT /orgs/{org}/security-managers/teams/{team_slug}"
+    ],
+    assignTeamToOrgRole: [
+      "PUT /orgs/{org}/organization-roles/teams/{team_slug}/{role_id}"
+    ],
+    assignUserToOrgRole: [
+      "PUT /orgs/{org}/organization-roles/users/{username}/{role_id}"
     ],
     blockUser: ["PUT /orgs/{org}/blocks/{username}"],
     cancelInvitation: ["DELETE /orgs/{org}/invitations/{invitation_id}"],
@@ -1995,6 +2017,7 @@ const Endpoints = {
     convertMemberToOutsideCollaborator: [
       "PUT /orgs/{org}/outside_collaborators/{username}"
     ],
+    createCustomOrganizationRole: ["POST /orgs/{org}/organization-roles"],
     createInvitation: ["POST /orgs/{org}/invitations"],
     createOrUpdateCustomProperties: ["PATCH /orgs/{org}/properties/schema"],
     createOrUpdateCustomPropertiesValuesForRepos: [
@@ -2005,6 +2028,9 @@ const Endpoints = {
     ],
     createWebhook: ["POST /orgs/{org}/hooks"],
     delete: ["DELETE /orgs/{org}"],
+    deleteCustomOrganizationRole: [
+      "DELETE /orgs/{org}/organization-roles/{role_id}"
+    ],
     deleteWebhook: ["DELETE /orgs/{org}/hooks/{hook_id}"],
     enableOrDisableSecurityProductOnAllOrgRepos: [
       "POST /orgs/{org}/{security_product}/{enablement}"
@@ -2016,6 +2042,7 @@ const Endpoints = {
     ],
     getMembershipForAuthenticatedUser: ["GET /user/memberships/orgs/{org}"],
     getMembershipForUser: ["GET /orgs/{org}/memberships/{username}"],
+    getOrgRole: ["GET /orgs/{org}/organization-roles/{role_id}"],
     getWebhook: ["GET /orgs/{org}/hooks/{hook_id}"],
     getWebhookConfigForOrg: ["GET /orgs/{org}/hooks/{hook_id}/config"],
     getWebhookDelivery: [
@@ -2031,6 +2058,12 @@ const Endpoints = {
     listInvitationTeams: ["GET /orgs/{org}/invitations/{invitation_id}/teams"],
     listMembers: ["GET /orgs/{org}/members"],
     listMembershipsForAuthenticatedUser: ["GET /user/memberships/orgs"],
+    listOrgRoleTeams: ["GET /orgs/{org}/organization-roles/{role_id}/teams"],
+    listOrgRoleUsers: ["GET /orgs/{org}/organization-roles/{role_id}/users"],
+    listOrgRoles: ["GET /orgs/{org}/organization-roles"],
+    listOrganizationFineGrainedPermissions: [
+      "GET /orgs/{org}/organization-fine-grained-permissions"
+    ],
     listOutsideCollaborators: ["GET /orgs/{org}/outside_collaborators"],
     listPatGrantRepositories: [
       "GET /orgs/{org}/personal-access-tokens/{pat_id}/repositories"
@@ -2045,6 +2078,9 @@ const Endpoints = {
     listSecurityManagerTeams: ["GET /orgs/{org}/security-managers"],
     listWebhookDeliveries: ["GET /orgs/{org}/hooks/{hook_id}/deliveries"],
     listWebhooks: ["GET /orgs/{org}/hooks"],
+    patchCustomOrganizationRole: [
+      "PATCH /orgs/{org}/organization-roles/{role_id}"
+    ],
     pingWebhook: ["POST /orgs/{org}/hooks/{hook_id}/pings"],
     redeliverWebhookDelivery: [
       "POST /orgs/{org}/hooks/{hook_id}/deliveries/{delivery_id}/attempts"
@@ -2068,6 +2104,18 @@ const Endpoints = {
     ],
     reviewPatGrantRequestsInBulk: [
       "POST /orgs/{org}/personal-access-token-requests"
+    ],
+    revokeAllOrgRolesTeam: [
+      "DELETE /orgs/{org}/organization-roles/teams/{team_slug}"
+    ],
+    revokeAllOrgRolesUser: [
+      "DELETE /orgs/{org}/organization-roles/users/{username}"
+    ],
+    revokeOrgRoleTeam: [
+      "DELETE /orgs/{org}/organization-roles/teams/{team_slug}/{role_id}"
+    ],
+    revokeOrgRoleUser: [
+      "DELETE /orgs/{org}/organization-roles/users/{username}/{role_id}"
     ],
     setMembershipForUser: ["PUT /orgs/{org}/memberships/{username}"],
     setPublicMembershipForAuthenticatedUser: [
@@ -2359,6 +2407,9 @@ const Endpoints = {
       {},
       { mapToData: "users" }
     ],
+    cancelPagesDeployment: [
+      "POST /repos/{owner}/{repo}/pages/deployments/{pages_deployment_id}/cancel"
+    ],
     checkAutomatedSecurityFixes: [
       "GET /repos/{owner}/{repo}/automated-security-fixes"
     ],
@@ -2394,12 +2445,15 @@ const Endpoints = {
     createForAuthenticatedUser: ["POST /user/repos"],
     createFork: ["POST /repos/{owner}/{repo}/forks"],
     createInOrg: ["POST /orgs/{org}/repos"],
+    createOrUpdateCustomPropertiesValues: [
+      "PATCH /repos/{owner}/{repo}/properties/values"
+    ],
     createOrUpdateEnvironment: [
       "PUT /repos/{owner}/{repo}/environments/{environment_name}"
     ],
     createOrUpdateFileContents: ["PUT /repos/{owner}/{repo}/contents/{path}"],
     createOrgRuleset: ["POST /orgs/{org}/rulesets"],
-    createPagesDeployment: ["POST /repos/{owner}/{repo}/pages/deployment"],
+    createPagesDeployment: ["POST /repos/{owner}/{repo}/pages/deployments"],
     createPagesSite: ["POST /repos/{owner}/{repo}/pages"],
     createRelease: ["POST /repos/{owner}/{repo}/releases"],
     createRepoRuleset: ["POST /repos/{owner}/{repo}/rulesets"],
@@ -2552,6 +2606,9 @@ const Endpoints = {
     getOrgRulesets: ["GET /orgs/{org}/rulesets"],
     getPages: ["GET /repos/{owner}/{repo}/pages"],
     getPagesBuild: ["GET /repos/{owner}/{repo}/pages/builds/{build_id}"],
+    getPagesDeployment: [
+      "GET /repos/{owner}/{repo}/pages/deployments/{pages_deployment_id}"
+    ],
     getPagesHealthCheck: ["GET /repos/{owner}/{repo}/pages/health"],
     getParticipationStats: ["GET /repos/{owner}/{repo}/stats/participation"],
     getPullRequestReviewProtection: [
@@ -2762,6 +2819,9 @@ const Endpoints = {
     ]
   },
   securityAdvisories: {
+    createFork: [
+      "POST /repos/{owner}/{repo}/security-advisories/{ghsa_id}/forks"
+    ],
     createPrivateVulnerabilityReport: [
       "POST /repos/{owner}/{repo}/security-advisories/reports"
     ],
@@ -3501,7 +3561,7 @@ var hasRequiredUtils;
 function requireUtils () {
 	if (hasRequiredUtils) return utils$1;
 	hasRequiredUtils = 1;
-	(function (exports) {
+	(function (exports$1) {
 		var __createBinding = (utils$1 && utils$1.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 		    if (k2 === undefined) k2 = k;
 		    var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -3525,24 +3585,24 @@ function requireUtils () {
 		    __setModuleDefault(result, mod);
 		    return result;
 		};
-		Object.defineProperty(exports, "__esModule", { value: true });
-		exports.getOctokitOptions = exports.GitHub = exports.defaults = exports.context = void 0;
+		Object.defineProperty(exports$1, "__esModule", { value: true });
+		exports$1.getOctokitOptions = exports$1.GitHub = exports$1.defaults = exports$1.context = void 0;
 		const Context = __importStar(requireContext());
 		const Utils = __importStar(requireUtils$1());
 		// octokit + plugins
 		const core_1 = require$$2;
 		const plugin_rest_endpoint_methods_1 = require$$3;
 		const plugin_paginate_rest_1 = require$$4;
-		exports.context = new Context.Context();
+		exports$1.context = new Context.Context();
 		const baseUrl = Utils.getApiBaseUrl();
-		exports.defaults = {
+		exports$1.defaults = {
 		    baseUrl,
 		    request: {
 		        agent: Utils.getProxyAgent(baseUrl),
 		        fetch: Utils.getProxyFetch(baseUrl)
 		    }
 		};
-		exports.GitHub = core_1.Octokit.plugin(plugin_rest_endpoint_methods_1.restEndpointMethods, plugin_paginate_rest_1.paginateRest).defaults(exports.defaults);
+		exports$1.GitHub = core_1.Octokit.plugin(plugin_rest_endpoint_methods_1.restEndpointMethods, plugin_paginate_rest_1.paginateRest).defaults(exports$1.defaults);
 		/**
 		 * Convience function to correctly format Octokit Options to pass into the constructor.
 		 *
@@ -3558,7 +3618,7 @@ function requireUtils () {
 		    }
 		    return opts;
 		}
-		exports.getOctokitOptions = getOctokitOptions;
+		exports$1.getOctokitOptions = getOctokitOptions;
 		
 	} (utils$1));
 	return utils$1;
@@ -3625,8 +3685,8 @@ var hasRequiredSemver;
 function requireSemver () {
 	if (hasRequiredSemver) return semver.exports;
 	hasRequiredSemver = 1;
-	(function (module, exports) {
-		exports = module.exports = SemVer;
+	(function (module, exports$1) {
+		exports$1 = module.exports = SemVer;
 
 		var debug;
 		/* istanbul ignore next */
@@ -3645,7 +3705,7 @@ function requireSemver () {
 
 		// Note: this is the semver.org version of the spec that it implements
 		// Not necessarily the package version of this code.
-		exports.SEMVER_SPEC_VERSION = '2.0.0';
+		exports$1.SEMVER_SPEC_VERSION = '2.0.0';
 
 		var MAX_LENGTH = 256;
 		var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER ||
@@ -3657,10 +3717,10 @@ function requireSemver () {
 		var MAX_SAFE_BUILD_LENGTH = MAX_LENGTH - 6;
 
 		// The actual regexps go on exports.re
-		var re = exports.re = [];
-		var safeRe = exports.safeRe = [];
-		var src = exports.src = [];
-		var t = exports.tokens = {};
+		var re = exports$1.re = [];
+		var safeRe = exports$1.safeRe = [];
+		var src = exports$1.src = [];
+		var t = exports$1.tokens = {};
 		var R = 0;
 
 		function tok (n) {
@@ -3918,7 +3978,7 @@ function requireSemver () {
 		  }
 		}
 
-		exports.parse = parse;
+		exports$1.parse = parse;
 		function parse (version, options) {
 		  if (!options || typeof options !== 'object') {
 		    options = {
@@ -3951,19 +4011,19 @@ function requireSemver () {
 		  }
 		}
 
-		exports.valid = valid;
+		exports$1.valid = valid;
 		function valid (version, options) {
 		  var v = parse(version, options);
 		  return v ? v.version : null
 		}
 
-		exports.clean = clean;
+		exports$1.clean = clean;
 		function clean (version, options) {
 		  var s = parse(version.trim().replace(/^[=v]+/, ''), options);
 		  return s ? s.version : null
 		}
 
-		exports.SemVer = SemVer;
+		exports$1.SemVer = SemVer;
 
 		function SemVer (version, options) {
 		  if (!options || typeof options !== 'object') {
@@ -4234,7 +4294,7 @@ function requireSemver () {
 		  return this
 		};
 
-		exports.inc = inc;
+		exports$1.inc = inc;
 		function inc (version, release, loose, identifier) {
 		  if (typeof (loose) === 'string') {
 		    identifier = loose;
@@ -4248,7 +4308,7 @@ function requireSemver () {
 		  }
 		}
 
-		exports.diff = diff;
+		exports$1.diff = diff;
 		function diff (version1, version2) {
 		  if (eq(version1, version2)) {
 		    return null
@@ -4271,7 +4331,7 @@ function requireSemver () {
 		  }
 		}
 
-		exports.compareIdentifiers = compareIdentifiers;
+		exports$1.compareIdentifiers = compareIdentifiers;
 
 		var numeric = /^[0-9]+$/;
 		function compareIdentifiers (a, b) {
@@ -4290,93 +4350,93 @@ function requireSemver () {
 		    : 1
 		}
 
-		exports.rcompareIdentifiers = rcompareIdentifiers;
+		exports$1.rcompareIdentifiers = rcompareIdentifiers;
 		function rcompareIdentifiers (a, b) {
 		  return compareIdentifiers(b, a)
 		}
 
-		exports.major = major;
+		exports$1.major = major;
 		function major (a, loose) {
 		  return new SemVer(a, loose).major
 		}
 
-		exports.minor = minor;
+		exports$1.minor = minor;
 		function minor (a, loose) {
 		  return new SemVer(a, loose).minor
 		}
 
-		exports.patch = patch;
+		exports$1.patch = patch;
 		function patch (a, loose) {
 		  return new SemVer(a, loose).patch
 		}
 
-		exports.compare = compare;
+		exports$1.compare = compare;
 		function compare (a, b, loose) {
 		  return new SemVer(a, loose).compare(new SemVer(b, loose))
 		}
 
-		exports.compareLoose = compareLoose;
+		exports$1.compareLoose = compareLoose;
 		function compareLoose (a, b) {
 		  return compare(a, b, true)
 		}
 
-		exports.compareBuild = compareBuild;
+		exports$1.compareBuild = compareBuild;
 		function compareBuild (a, b, loose) {
 		  var versionA = new SemVer(a, loose);
 		  var versionB = new SemVer(b, loose);
 		  return versionA.compare(versionB) || versionA.compareBuild(versionB)
 		}
 
-		exports.rcompare = rcompare;
+		exports$1.rcompare = rcompare;
 		function rcompare (a, b, loose) {
 		  return compare(b, a, loose)
 		}
 
-		exports.sort = sort;
+		exports$1.sort = sort;
 		function sort (list, loose) {
 		  return list.sort(function (a, b) {
-		    return exports.compareBuild(a, b, loose)
+		    return exports$1.compareBuild(a, b, loose)
 		  })
 		}
 
-		exports.rsort = rsort;
+		exports$1.rsort = rsort;
 		function rsort (list, loose) {
 		  return list.sort(function (a, b) {
-		    return exports.compareBuild(b, a, loose)
+		    return exports$1.compareBuild(b, a, loose)
 		  })
 		}
 
-		exports.gt = gt;
+		exports$1.gt = gt;
 		function gt (a, b, loose) {
 		  return compare(a, b, loose) > 0
 		}
 
-		exports.lt = lt;
+		exports$1.lt = lt;
 		function lt (a, b, loose) {
 		  return compare(a, b, loose) < 0
 		}
 
-		exports.eq = eq;
+		exports$1.eq = eq;
 		function eq (a, b, loose) {
 		  return compare(a, b, loose) === 0
 		}
 
-		exports.neq = neq;
+		exports$1.neq = neq;
 		function neq (a, b, loose) {
 		  return compare(a, b, loose) !== 0
 		}
 
-		exports.gte = gte;
+		exports$1.gte = gte;
 		function gte (a, b, loose) {
 		  return compare(a, b, loose) >= 0
 		}
 
-		exports.lte = lte;
+		exports$1.lte = lte;
 		function lte (a, b, loose) {
 		  return compare(a, b, loose) <= 0
 		}
 
-		exports.cmp = cmp;
+		exports$1.cmp = cmp;
 		function cmp (a, op, b, loose) {
 		  switch (op) {
 		    case '===':
@@ -4418,7 +4478,7 @@ function requireSemver () {
 		  }
 		}
 
-		exports.Comparator = Comparator;
+		exports$1.Comparator = Comparator;
 		function Comparator (comp, options) {
 		  if (!options || typeof options !== 'object') {
 		    options = {
@@ -4550,7 +4610,7 @@ function requireSemver () {
 		    oppositeDirectionsLessThan || oppositeDirectionsGreaterThan
 		};
 
-		exports.Range = Range;
+		exports$1.Range = Range;
 		function Range (range, options) {
 		  if (!options || typeof options !== 'object') {
 		    options = {
@@ -4694,7 +4754,7 @@ function requireSemver () {
 		}
 
 		// Mostly just for testing and legacy API reasons
-		exports.toComparators = toComparators;
+		exports$1.toComparators = toComparators;
 		function toComparators (range, options) {
 		  return new Range(range, options).set.map(function (comp) {
 		    return comp.map(function (c) {
@@ -5005,7 +5065,7 @@ function requireSemver () {
 		  return true
 		}
 
-		exports.satisfies = satisfies;
+		exports$1.satisfies = satisfies;
 		function satisfies (version, range, options) {
 		  try {
 		    range = new Range(range, options);
@@ -5015,7 +5075,7 @@ function requireSemver () {
 		  return range.test(version)
 		}
 
-		exports.maxSatisfying = maxSatisfying;
+		exports$1.maxSatisfying = maxSatisfying;
 		function maxSatisfying (versions, range, options) {
 		  var max = null;
 		  var maxSV = null;
@@ -5037,7 +5097,7 @@ function requireSemver () {
 		  return max
 		}
 
-		exports.minSatisfying = minSatisfying;
+		exports$1.minSatisfying = minSatisfying;
 		function minSatisfying (versions, range, options) {
 		  var min = null;
 		  var minSV = null;
@@ -5059,7 +5119,7 @@ function requireSemver () {
 		  return min
 		}
 
-		exports.minVersion = minVersion;
+		exports$1.minVersion = minVersion;
 		function minVersion (range, loose) {
 		  range = new Range(range, loose);
 
@@ -5113,7 +5173,7 @@ function requireSemver () {
 		  return null
 		}
 
-		exports.validRange = validRange;
+		exports$1.validRange = validRange;
 		function validRange (range, options) {
 		  try {
 		    // Return '*' instead of '' so that truthiness works.
@@ -5125,18 +5185,18 @@ function requireSemver () {
 		}
 
 		// Determine if version is less than all the versions possible in the range
-		exports.ltr = ltr;
+		exports$1.ltr = ltr;
 		function ltr (version, range, options) {
 		  return outside(version, range, '<', options)
 		}
 
 		// Determine if version is greater than all the versions possible in the range.
-		exports.gtr = gtr;
+		exports$1.gtr = gtr;
 		function gtr (version, range, options) {
 		  return outside(version, range, '>', options)
 		}
 
-		exports.outside = outside;
+		exports$1.outside = outside;
 		function outside (version, range, hilo, options) {
 		  version = new SemVer(version, options);
 		  range = new Range(range, options);
@@ -5206,20 +5266,20 @@ function requireSemver () {
 		  return true
 		}
 
-		exports.prerelease = prerelease;
+		exports$1.prerelease = prerelease;
 		function prerelease (version, options) {
 		  var parsed = parse(version, options);
 		  return (parsed && parsed.prerelease.length) ? parsed.prerelease : null
 		}
 
-		exports.intersects = intersects;
+		exports$1.intersects = intersects;
 		function intersects (r1, r2, options) {
 		  r1 = new Range(r1, options);
 		  r2 = new Range(r2, options);
 		  return r1.intersects(r2)
 		}
 
-		exports.coerce = coerce;
+		exports$1.coerce = coerce;
 		function coerce (version, options) {
 		  if (version instanceof SemVer) {
 		    return version
@@ -5280,7 +5340,7 @@ var hasRequiredManifest;
 function requireManifest () {
 	if (hasRequiredManifest) return manifest$1.exports;
 	hasRequiredManifest = 1;
-	(function (module, exports) {
+	(function (module, exports$1) {
 		var __createBinding = (manifest && manifest.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 		    if (k2 === undefined) k2 = k;
 		    var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -5313,8 +5373,8 @@ function requireManifest () {
 		        step((generator = generator.apply(thisArg, _arguments || [])).next());
 		    });
 		};
-		Object.defineProperty(exports, "__esModule", { value: true });
-		exports._readLinuxVersionFile = exports._getOsVersion = exports._findMatch = void 0;
+		Object.defineProperty(exports$1, "__esModule", { value: true });
+		exports$1._readLinuxVersionFile = exports$1._getOsVersion = exports$1._findMatch = void 0;
 		const semver = __importStar(requireSemver());
 		const core_1 = requireCore();
 		// needs to be require for core node modules to be mocked
@@ -5362,7 +5422,7 @@ function requireManifest () {
 		        return result;
 		    });
 		}
-		exports._findMatch = _findMatch;
+		exports$1._findMatch = _findMatch;
 		function _getOsVersion() {
 		    // TODO: add windows and other linux, arm variants
 		    // right now filtering on version is only an ubuntu and macos scenario for tools we build for hosted (python)
@@ -5394,7 +5454,7 @@ function requireManifest () {
 		    }
 		    return version;
 		}
-		exports._getOsVersion = _getOsVersion;
+		exports$1._getOsVersion = _getOsVersion;
 		function _readLinuxVersionFile() {
 		    const lsbReleaseFile = '/etc/lsb-release';
 		    const osReleaseFile = '/etc/os-release';
@@ -5407,7 +5467,7 @@ function requireManifest () {
 		    }
 		    return contents;
 		}
-		exports._readLinuxVersionFile = _readLinuxVersionFile;
+		exports$1._readLinuxVersionFile = _readLinuxVersionFile;
 		
 	} (manifest$1, manifest$1.exports));
 	return manifest$1.exports;
@@ -6198,6 +6258,11 @@ async function run() {
 
     const jobName = coreExports.getInput('job_name', { required: true });
     process.env.GITHUB_JOB_NAME = jobName;
+
+    const skipComment = coreExports.getBooleanInput('skip_comment', {
+      required: false
+    });
+    coreExports.saveState('octometrics_skip_comment', skipComment ? 'true' : 'false');
 
     var version = coreExports.getInput('version', { required: false });
     if (!version) {
