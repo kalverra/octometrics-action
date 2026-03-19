@@ -1,4 +1,4 @@
-import { d as requireCore$1, c as getAugmentedNamespace, r as requireLib$2, j as requireAuth, h as commonjsGlobal, g as getUserAgent, k as getDefaultExportFromCjs, D as Deprecation, o as once$1, b as beforeAfterHookExports, i as coreExports } from './once-CLj6ax7h.js';
+import { d as requireCore$1, c as getAugmentedNamespace, r as requireLib$2, j as requireAuth, h as commonjsGlobal, g as getUserAgent, k as getDefaultExportFromCjs, D as Deprecation, o as once$1, b as beforeAfterHookExports, i as coreExports } from './once-CXYGTu1T.js';
 import { execSync } from 'child_process';
 import require$$0__default from 'os';
 import * as require$$0$4 from 'fs';
