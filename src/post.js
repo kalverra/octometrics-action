@@ -34,7 +34,7 @@ export async function run() {
       )
     } else {
       try {
-        const skipComment = core.getState('octometrics_skip_comment')
+        const skipComment = core.getState('octometrics_skip_comment') === 'true'
         core.info('Generating octometrics report...')
         execSync(
           `${binaryPath} report -f ${monitorPath} ${skipComment ? '--skip-comment' : ''}`,

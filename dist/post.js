@@ -172400,7 +172400,7 @@ async function run() {
       );
     } else {
       try {
-        const skipComment = coreExports.getState('octometrics_skip_comment');
+        const skipComment = coreExports.getState('octometrics_skip_comment') === 'true';
         coreExports.info('Generating octometrics report...');
         execSync(
           `${binaryPath} report -f ${monitorPath} ${skipComment ? '--skip-comment' : ''}`,

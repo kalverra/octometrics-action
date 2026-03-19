@@ -21,7 +21,9 @@ export async function run() {
     const jobName = core.getInput('job_name', { required: true })
     process.env.GITHUB_JOB_NAME = jobName
 
-    const skipComment = core.getBooleanInput('skip_comment', { required: false })
+    const skipComment = core.getBooleanInput('skip_comment', {
+      required: false
+    })
     core.saveState('octometrics_skip_comment', skipComment ? 'true' : 'false')
 
     var version = core.getInput('version', { required: false })
