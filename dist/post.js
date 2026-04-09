@@ -172372,15 +172372,17 @@ var artifactExports = requireArtifact();
  * This runs after the main action completes, regardless of success or failure.
  */
 
-const artifactName = `${process.env.GITHUB_JOB}-octometrics.monitor.log.jsonl`;
-const monitorPath = '/tmp/' + artifactName;
-
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
  */
 async function run() {
   try {
+    const jobName = coreExports.getInput('job_name', { required: true });
+    const safeJobName = jobName.replace(/["/:<>|*?\\]/g, '-');
+    const artifactName = `${safeJobName}-octometrics.monitor.log.jsonl`;
+    const monitorPath = '/tmp/' + artifactName;
+
     // Check if we're running in a GitHub Actions environment
     const isGitHubActions = process.env.GITHUB_ACTIONS === 'true';
     const hasRuntimeToken = !!process.env.ACTIONS_RUNTIME_TOKEN;
@@ -172417,6 +172419,7 @@ async function run() {
     }
 
     coreExports.info('Uploading octometrics monitor data...');
+    coreExports.info(`Artifact name: ${artifactName}`);
 
     // Create artifact client
     const artifactClient = new artifactExports.DefaultArtifactClient();

@@ -6244,9 +6244,6 @@ function requireToolCache () {
 
 var toolCacheExports = requireToolCache();
 
-const artifactName = `${process.env.GITHUB_JOB}-octometrics.monitor.log.jsonl`;
-const monitorPath = '/tmp/' + artifactName;
-
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -6257,6 +6254,9 @@ async function run() {
     const arch = require$$0.arch();
 
     const jobName = coreExports.getInput('job_name', { required: true });
+    const safeJobName = jobName.replace(/["/:<>|*?\\]/g, '-');
+    const artifactName = `${safeJobName}-octometrics.monitor.log.jsonl`;
+    const monitorPath = '/tmp/' + artifactName;
     process.env.GITHUB_JOB_NAME = jobName;
 
     const skipComment = coreExports.getBooleanInput('skip_comment', {
