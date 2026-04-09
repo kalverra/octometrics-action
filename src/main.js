@@ -6,9 +6,6 @@ import * as path from 'path'
 import * as fs from 'fs'
 import { spawn } from 'child_process'
 
-const artifactName = `${process.env.GITHUB_JOB}-octometrics.monitor.log.jsonl`
-const monitorPath = '/tmp/' + artifactName
-
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -19,6 +16,9 @@ export async function run() {
     const arch = os.arch()
 
     const jobName = core.getInput('job_name', { required: true })
+    const safeJobName = jobName.replace(/["/:<>|*?\\]/g, '-')
+    const artifactName = `${safeJobName}-octometrics.monitor.log.jsonl`
+    const monitorPath = '/tmp/' + artifactName
     process.env.GITHUB_JOB_NAME = jobName
 
     const skipComment = core.getBooleanInput('skip_comment', {

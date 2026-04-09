@@ -6,15 +6,17 @@ import * as core from '@actions/core'
 import { execSync } from 'child_process'
 import { DefaultArtifactClient } from '@actions/artifact'
 
-const artifactName = `${process.env.GITHUB_JOB}-octometrics.monitor.log.jsonl`
-const monitorPath = '/tmp/' + artifactName
-
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
  */
 export async function run() {
   try {
+    const jobName = core.getInput('job_name', { required: true })
+    const safeJobName = jobName.replace(/["/:<>|*?\\]/g, '-')
+    const artifactName = `${safeJobName}-octometrics.monitor.log.jsonl`
+    const monitorPath = '/tmp/' + artifactName
+
     // Check if we're running in a GitHub Actions environment
     const isGitHubActions = process.env.GITHUB_ACTIONS === 'true'
     const hasRuntimeToken = !!process.env.ACTIONS_RUNTIME_TOKEN
@@ -51,6 +53,7 @@ export async function run() {
     }
 
     core.info('Uploading octometrics monitor data...')
+    core.info(`Artifact name: ${artifactName}`)
 
     // Create artifact client
     const artifactClient = new DefaultArtifactClient()
