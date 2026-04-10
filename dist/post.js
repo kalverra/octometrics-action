@@ -1,5 +1,5 @@
 import { d as requireCore$1, c as getAugmentedNamespace, r as requireLib$2, j as requireAuth, h as commonjsGlobal, g as getUserAgent, k as getDefaultExportFromCjs, D as Deprecation, o as once$1, b as beforeAfterHookExports, i as coreExports } from './once-CXYGTu1T.js';
-import { execSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import require$$0__default from 'os';
 import * as require$$0$4 from 'fs';
 import require$$0__default$1 from 'fs';
@@ -172404,14 +172404,28 @@ async function run() {
       try {
         const skipComment = coreExports.getState('octometrics_skip_comment') === 'true';
         coreExports.info('Generating octometrics report...');
-        execSync(
-          `${binaryPath} report -f ${monitorPath} ${skipComment ? '--skip-comment' : ''}`,
-          {
-            env: { ...process.env },
-            stdio: 'inherit',
-            timeout: 60000
-          }
-        );
+        const args = ['report', '-f', monitorPath];
+        if (skipComment) {
+          args.push('--skip-comment');
+        }
+        const result = spawnSync(binaryPath, args, {
+          env: { ...process.env },
+          stdio: 'inherit',
+          timeout: 60000
+        });
+        if (result.error) {
+          throw result.error
+        }
+        if (result.signal) {
+          throw new Error(
+            `octometrics report killed by signal ${result.signal}`
+          )
+        }
+        if (result.status !== 0) {
+          throw new Error(
+            `octometrics report exited with code ${result.status}`
+          )
+        }
         coreExports.info('Octometrics report generated successfully');
       } catch (error) {
         coreExports.warning(`Failed to generate octometrics report: ${error.message}`);

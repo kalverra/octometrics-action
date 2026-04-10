@@ -3,7 +3,7 @@
  * This runs after the main action completes, regardless of success or failure.
  */
 import * as core from '@actions/core'
-import { execSync } from 'child_process'
+import { spawnSync } from 'child_process'
 import { DefaultArtifactClient } from '@actions/artifact'
 
 /**
@@ -38,14 +38,28 @@ export async function run() {
       try {
         const skipComment = core.getState('octometrics_skip_comment') === 'true'
         core.info('Generating octometrics report...')
-        execSync(
-          `${binaryPath} report -f ${monitorPath} ${skipComment ? '--skip-comment' : ''}`,
-          {
-            env: { ...process.env },
-            stdio: 'inherit',
-            timeout: 60000
-          }
-        )
+        const args = ['report', '-f', monitorPath]
+        if (skipComment) {
+          args.push('--skip-comment')
+        }
+        const result = spawnSync(binaryPath, args, {
+          env: { ...process.env },
+          stdio: 'inherit',
+          timeout: 60000
+        })
+        if (result.error) {
+          throw result.error
+        }
+        if (result.signal) {
+          throw new Error(
+            `octometrics report killed by signal ${result.signal}`
+          )
+        }
+        if (result.status !== 0) {
+          throw new Error(
+            `octometrics report exited with code ${result.status}`
+          )
+        }
         core.info('Octometrics report generated successfully')
       } catch (error) {
         core.warning(`Failed to generate octometrics report: ${error.message}`)
