@@ -24,7 +24,7 @@ example-job:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Optional, but highly recommended to prevent rate limiting
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
     - name: Run rest of workflow
       run: |
         echo "Hello World!"
